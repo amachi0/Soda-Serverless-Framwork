@@ -1,0 +1,572 @@
+service: soda-test
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: ap-northeast-1
+
+  #環境変数
+  environment:
+    #cloud_searchのエンドポイント
+    CLOUD_SEARCH_ENDPOINT: ${file(myCustomFile.yml):CLOUD_SEARCH_ENDPOINT}
+    CLOUD_SEARCH_DOC_ENDPOINT: ${file(myCustomFile.yml):CLOUD_SEARCH_DOC_ENDPOINT}
+
+    #s3の画像ファイルのARN
+    ARN_S3: "https://s3-ap-northeast-1.amazonaws.com"
+
+    #dynamodbのテーブル名
+    PROFILE_TABLE: ${self:custom.profileTable.${self:provider.stage}}
+    EVENT_TABLE: ${self:custom.eventTable.${self:provider.stage}}
+    SEQUENCE_TABLE: ${self:custom.sequenceTable.${self:provider.stage}}
+
+    #プロフィールテーブルのインデックス
+    PROFILE_CHECK_SODA_ID_INDEX: ${self:custom.profileCheckSodaIdIndex}
+    PROFILE_CHECK_Email_INDEX: ${self:custom.profileCheckEmailIndex}
+    PROFILE_SODA_ID_INDEX: ${self:custom.profileSodaIdIndex}
+
+    #イベントテーブルのインデックス
+    EVENT_STATUS_START_INDEX: ${self:custom.eventStatusStartIndex}
+    EVENT_STATUS_COUNTOFLIKE_INDEX: ${self:custom.eventStatusCountOfLikeIndex}
+    EVENT_STATUS_UPDATETIME_INDEX: ${self:custom.eventStatusUpdateTimeIndex}
+
+    #S3のバケット名
+    S3_JSON_BUCKET: ${self:custom.s3JsonBucket}
+    S3_IMAGE_BUCKET: ${self:custom.s3ImageBucket}
+
+    #S3のファイル名
+    FAQS_JSON: faqs.json
+    TERMS_JSON: terms.json
+    UNIVERSITY_JSON: university.json
+
+    SNS_CANCEL_TOPIC: ${self:custom.snsCancelTopic}
+
+    SES_REGION: us-east-1
+
+    #メールを送信する際の差出人のメールアドレス
+    MAIL_ADRESS_FROM_SODA: ${file(myCustomFile.yml):MAIL_ADRESS_FROM_SODA}
+
+    #お問い合わせからのメールを受け取る際のアドレス
+    MAIL_ADRESS_CONTACT: ${file(myCustomFile.yml):MAIL_ADRESS_CONTACT}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.sequenceTable.${self:provider.stage}}
+      Action:
+        - "dynamodb:UpdateItem"
+
+    - Effect: Allow
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.eventTable.${self:provider.stage}}
+      Action:
+        - "dynamodb:PutItem"
+        - "dynamodb:GetItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:BatchGetItem"
+        - "dynamodb:DeleteItem"
+    
+    - Effect: Allow
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.profileTable.${self:provider.stage}}
+      Action:
+        - "dynamodb:GetItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:BatchGetItem"
+
+    - Effect: Allow
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.profileTable.${self:provider.stage}}/index/*
+      Action:
+        - "dynamodb:Query"
+
+    - Effect: Allow
+      Resource: arn:aws:s3:::${self:custom.s3JsonBucket}/*
+      Action:
+        - "s3:GetObject"
+
+    - Effect: Allow
+      Resource: arn:aws:s3:::${self:custom.s3ImageBucket}/*
+      Action:
+        - "s3:PutObject"
+        - "s3:PutObjectAcl"
+
+    - Effect: Allow
+      Resource: "*"
+      Action:
+        - "ses:SendEmail"
+    
+    - Effect: Allow
+      Resource: ${self:custom.snsCancelTopic}
+      Action:
+        - "sns:Publish"
+    
+    - Effect: Allow
+      Resource: arn:aws:cloudsearch:${self:provider.region}:*:domain/*
+      Action: 
+        - "cloudsearch:search"
+        - "cloudsearch:document"
+
+    - Effect: Allow
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.eventTable.${self:provider.stage}}/index/*
+      Action:
+        - "dynamodb:Query"
+    
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:*
+
+custom:
+  defaultStage: dev
+  profileTable: 
+    dev: dev-profile
+    prod: test-prod-profile
+
+  eventTable:
+    dev: dev-event
+    prod: test-prod-event
+  
+  sequenceTable:
+    dev: dev-sequence
+    prod: test-prod-sequence
+
+  profileCheckSodaIdIndex: check-sodaId-index
+  profileCheckEmailIndex: check-email-index
+  profileSodaIdIndex: sodaId-index
+  eventStatusStartIndex: status-start-index
+  eventStatusCountOfLikeIndex: status-countOfLike-index
+  eventStatusUpdateTimeIndex: status-updateTime-index
+  snsCancelTopic: ${file(myCustomFile.yml):SNS_CANCEL_TOPIC}
+  s3JsonBucket: soda-json
+  s3ImageBucket: soda-test-image
+  
+resources:
+  Resources:
+    EventDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: eventId
+            AttributeType: N
+          -
+            AttributeName: finish
+            AttributeType: N
+          -
+            AttributeName: start
+            AttributeType: N
+        KeySchema:
+          -
+            AttributeName: eventId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          -
+            IndexName: finish-start-index
+            KeySchema:
+              -
+                AttributeName: finish
+                KeyType: HASH
+              -
+                AttributeName: start
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
+        TableName: ${self:custom.eventTable.${self:provider.stage}}
+    
+    ProfileDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: identityId
+            AttributeType: S
+          -
+            AttributeName: sodaId
+            AttributeType: S
+          -
+            AttributeName: email
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: identityId
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          -
+            IndexName: check-sodaId-index
+            KeySchema:
+              -
+                AttributeName: sodaId
+                KeyType: HASH
+            Projection:
+              ProjectionType: KEYS_ONLY
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+          -
+            IndexName: check-email-index
+            KeySchema:
+              -
+                AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: KEYS_ONLY
+            ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+          -
+            IndexName: sodaId-index
+            KeySchema:
+              -
+                AttributeName: sodaId
+                KeyType: HASH
+            Projection:
+                ProjectionType: ALL
+            ProvisionedThroughput:
+                ReadCapacityUnits: 5
+                WriteCapacityUnits: 5
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+        TableName: ${self:custom.profileTable.${self:provider.stage}}
+    
+    SequenceDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: tableName
+            AttributeType: S
+          
+        KeySchema:
+          -
+            AttributeName: tableName
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.sequenceTable.${self:provider.stage}}
+
+
+functions:
+  detail_event:
+    handler: event/detail_event.detail_event
+    timeout: 3
+    events:
+      - http:
+          path: event
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                eventId: true
+                identityId: true
+
+  create_event:
+    handler: event/create_event.create_event
+    timeout: 3
+    events:
+      - http:
+          path: event
+          method: post
+          cors: true
+
+  change_event:
+    handler: event/change_event.change_event
+    timeout: 3
+    events:
+      - http:
+          path: event
+          method: put
+          cors: true
+
+  delete_event:
+    handler: event/delete_event.delete_event
+    timeout: 3
+    events:
+      - http:
+          path: event
+          method: delete
+          cors: true
+
+  cancel_sns:
+    handler: sns/cancel_sns.cancel_sns
+    timeout: 10
+    events:
+      - sns:
+          ${self:custom.snsCancelTopic}
+
+  turms:
+    handler: get_json/terms.terms
+    timeout: 3
+    events:
+      - http:
+          path: terms
+          method: get
+          cors: true
+
+  faqs:
+    handler: get_json/faqs.faqs
+    timeout: 3
+    events:
+      - http:
+          path: faqs
+          method: get
+          cors: true
+
+  university:
+    handler: get_json/university.university
+    timeout: 3
+    events:
+      - http:
+          path: university
+          method: get
+          cors: true
+
+  contact:
+    handler: contact/contact.contact
+    timeout: 3
+    events: 
+      - http:
+          path: contact
+          method: post
+          cors: true
+
+  push_favorite:
+    handler: favorite/push_favorite.push_favorite
+    timeout: 3
+    events:
+      - http:
+          path: favorite
+          method: post
+          cors: true
+
+  cancel_favorite:
+    handler: favorite/cancel_favorite.cancel_favorite
+    timeout: 3
+    events:
+      - http:
+          path: favorite
+          method: delete
+          cors: true
+
+  check_soda_id:
+    handler: session/check_soda_id.check_soda_id
+    timeout: 3
+    events:
+      - http:
+          path: check_soda_id
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                sodaId: true
+
+  check_email:
+    handler: session/check_email.check_email
+    timeout: 3
+    events:
+      - http:
+          path: check_email
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                email: true
+
+  get_soda_id:
+    handler: id/get_soda_id.get_soda_id
+    timeout: 3
+    events:
+      - http:
+          path: id
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                identityId: true
+
+  created_event:
+    handler: created_event/created_event.created_event
+    timeout: 3
+    events:
+      - http:
+          path: created_event
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                sodaId: true
+                page: true
+
+  organizer_info:
+    handler: organizer_info/organizer_info.organizer_info
+    timeout: 3
+    events:
+      - http:
+          path: organizer
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                eventId: true
+
+  get_profile:
+    handler: profile/get_profile.get_profile
+    timeout: 3
+    events:
+      - http:
+          path: profile
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                sodaId: true
+
+  create_user:
+    handler: profile/create_user.create_user
+    timeout: 3
+    events:
+      - http:
+          path: profile
+          method: post
+          cors: true
+
+  change_profile:
+    handler: profile/change_profile.change_profile
+    timeout: 3
+    events:
+      - http:
+          path: profile
+          method: put
+          cors: true
+
+  search_event:
+    handler: search/search_event.search_event
+    timeout: 3
+    events:
+      - http:
+          path: search
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                keyword: true
+                page: true
+
+  timeline_favorite:
+    handler: timeline/timeline_favorite.timeline_favorite
+    timeout: 3
+    events:
+      - http:
+          path: timeline/favorite
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                sodaId: true
+                page: true
+
+  timeline_home:
+    handler: timeline/timeline_home.timeline_home
+    timeout: 3
+    events:
+      - http:
+          path: timeline/home
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                identityId: true
+                page: true
+
+  timeline_hot:
+    handler: timeline/timeline_hot.timeline_hot
+    timeout: 3
+    events:
+      - http:
+          path: timeline/hot
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                identityId: true
+                page: true
+
+  timeline_new:
+    handler: timeline/timeline_new.timeline_new
+    timeout: 3
+    events:
+      - http:
+          path: timeline/new
+          method: get
+          cors: true
+          request:
+            parameters:
+              querystrings:
+                identityId: true
+                page: true
+
+  create_template:
+    handler: template/create_template.create_template
+    timeout: 3
+    events:
+      - http:
+          path: template
+          method: post
+          cors: true
+  
+  delete_template:
+    handler: template/delete_template.delete_template
+    timeout: 3
+    events:
+      - http:
+          path: template
+          method: delete
+          cors: true
+  
+  change_template:
+    handler: template/change_template.change_template
+    timeout: 3
+    events:
+      - http:
+          path: template
+          method: put
+          cors: true
+
+  upload_binary:
+    handler: upload_binary/upload_binary.upload_binary
+    timeout: 3
+    events:
+      - http:
+          path: upload_binary
+          method: post
+          cors: true
+  
+  finish_event:
+    handler: schedule/finish_event.finish_event
+    timeout: 3
+    events:
+      - schedule: cron(0 15 * * ? *)
+  
+  send_mail_a_day:
+    handler: schedule/send_mail_a_day.send_mail_a_day
+    timeout: 20
+    events:
+      - schedule: cron(0 23 * * ? *)
