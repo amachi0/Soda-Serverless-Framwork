@@ -32,7 +32,7 @@ def create_event(event, context):
         nextseq = next_seq(seqtable, 'event')
         identityId = param['identityId']
 
-        if not(param['end']):
+        if not("end" in param):
             end = None
         else:
             end = param['end']
