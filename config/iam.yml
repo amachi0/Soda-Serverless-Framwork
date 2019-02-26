@@ -1,0 +1,63 @@
+- Effect: Allow
+  Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.sequenceTable.${self:provider.stage}}
+  Action:
+    - "dynamodb:UpdateItem"
+
+- Effect: Allow
+  Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.eventTable.${self:provider.stage}}
+  Action:
+    - "dynamodb:PutItem"
+    - "dynamodb:GetItem"
+    - "dynamodb:UpdateItem"
+    - "dynamodb:BatchGetItem"
+    - "dynamodb:DeleteItem"
+
+- Effect: Allow
+  Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.profileTable.${self:provider.stage}}
+  Action:
+    - "dynamodb:GetItem"
+    - "dynamodb:UpdateItem"
+    - "dynamodb:PutItem"
+    - "dynamodb:BatchGetItem"
+
+- Effect: Allow
+  Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.profileTable.${self:provider.stage}}/index/*
+  Action:
+    - "dynamodb:Query"
+
+- Effect: Allow
+  Resource: arn:aws:s3:::${self:provider.environment.S3_JSON_BUCKET}/*
+  Action:
+    - "s3:GetObject"
+
+- Effect: Allow
+  Resource: arn:aws:s3:::${self:provider.environment.S3_IMAGE_BUCKET}/*
+  Action:
+    - "s3:PutObject"
+    - "s3:PutObjectAcl"
+
+- Effect: Allow
+  Resource: "*"
+  Action:
+    - "ses:SendEmail"
+
+- Effect: Allow
+  Resource: ${self:provider.environment.SNS_CANCEL_TOPIC}
+  Action:
+    - "sns:Publish"
+
+- Effect: Allow
+  Resource: arn:aws:cloudsearch:${self:provider.region}:*:domain/*
+  Action: 
+    - "cloudsearch:search"
+    - "cloudsearch:document"
+
+- Effect: Allow
+  Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.eventTable.${self:provider.stage}}/index/*
+  Action:
+    - "dynamodb:Query"
+
+- Effect: Allow
+  Action:
+    - dynamodb:DescribeTable
+  Resource: arn:aws:dynamodb:${self:provider.region}:*:*

@@ -6,138 +6,25 @@ provider:
   stage: ${opt:stage, self:custom.defaultStage}
   region: ap-northeast-1
 
-  #環境変数
-  environment:
-    #cloud_searchのエンドポイント
-    CLOUD_SEARCH_ENDPOINT: ${file(myCustomFile.yml):CLOUD_SEARCH_ENDPOINT}
-    CLOUD_SEARCH_DOC_ENDPOINT: ${file(myCustomFile.yml):CLOUD_SEARCH_DOC_ENDPOINT}
+  environment: ${file(./config/environment.yml)}
 
-    #s3の画像ファイルのARN
-    ARN_S3: "https://s3-ap-northeast-1.amazonaws.com"
-
-    #dynamodbのテーブル名
-    PROFILE_TABLE: ${self:custom.profileTable.${self:provider.stage}}
-    EVENT_TABLE: ${self:custom.eventTable.${self:provider.stage}}
-    SEQUENCE_TABLE: ${self:custom.sequenceTable.${self:provider.stage}}
-
-    #プロフィールテーブルのインデックス
-    PROFILE_CHECK_SODA_ID_INDEX: ${self:custom.profileCheckSodaIdIndex}
-    PROFILE_CHECK_Email_INDEX: ${self:custom.profileCheckEmailIndex}
-    PROFILE_SODA_ID_INDEX: ${self:custom.profileSodaIdIndex}
-
-    #イベントテーブルのインデックス
-    EVENT_STATUS_START_INDEX: ${self:custom.eventStatusStartIndex}
-    EVENT_STATUS_COUNTOFLIKE_INDEX: ${self:custom.eventStatusCountOfLikeIndex}
-    EVENT_STATUS_UPDATETIME_INDEX: ${self:custom.eventStatusUpdateTimeIndex}
-
-    #S3のバケット名
-    S3_JSON_BUCKET: ${self:custom.s3JsonBucket}
-    S3_IMAGE_BUCKET: ${self:custom.s3ImageBucket}
-
-    #S3のファイル名
-    FAQS_JSON: faqs.json
-    TERMS_JSON: terms.json
-    UNIVERSITY_JSON: university.json
-
-    SNS_CANCEL_TOPIC: ${self:custom.snsCancelTopic}
-
-    SES_REGION: us-east-1
-
-    #メールを送信する際の差出人のメールアドレス
-    MAIL_ADRESS_FROM_SODA: ${file(myCustomFile.yml):MAIL_ADRESS_FROM_SODA}
-
-    #お問い合わせからのメールを受け取る際のアドレス
-    MAIL_ADRESS_CONTACT: ${file(myCustomFile.yml):MAIL_ADRESS_CONTACT}
-
-  iamRoleStatements:
-    - Effect: Allow
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.sequenceTable.${self:provider.stage}}
-      Action:
-        - "dynamodb:UpdateItem"
-
-    - Effect: Allow
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.eventTable.${self:provider.stage}}
-      Action:
-        - "dynamodb:PutItem"
-        - "dynamodb:GetItem"
-        - "dynamodb:UpdateItem"
-        - "dynamodb:BatchGetItem"
-        - "dynamodb:DeleteItem"
-    
-    - Effect: Allow
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.profileTable.${self:provider.stage}}
-      Action:
-        - "dynamodb:GetItem"
-        - "dynamodb:UpdateItem"
-        - "dynamodb:PutItem"
-        - "dynamodb:BatchGetItem"
-
-    - Effect: Allow
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.profileTable.${self:provider.stage}}/index/*
-      Action:
-        - "dynamodb:Query"
-
-    - Effect: Allow
-      Resource: arn:aws:s3:::${self:custom.s3JsonBucket}/*
-      Action:
-        - "s3:GetObject"
-
-    - Effect: Allow
-      Resource: arn:aws:s3:::${self:custom.s3ImageBucket}/*
-      Action:
-        - "s3:PutObject"
-        - "s3:PutObjectAcl"
-
-    - Effect: Allow
-      Resource: "*"
-      Action:
-        - "ses:SendEmail"
-    
-    - Effect: Allow
-      Resource: ${self:custom.snsCancelTopic}
-      Action:
-        - "sns:Publish"
-    
-    - Effect: Allow
-      Resource: arn:aws:cloudsearch:${self:provider.region}:*:domain/*
-      Action: 
-        - "cloudsearch:search"
-        - "cloudsearch:document"
-
-    - Effect: Allow
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.eventTable.${self:provider.stage}}/index/*
-      Action:
-        - "dynamodb:Query"
-    
-    - Effect: Allow
-      Action:
-        - dynamodb:DescribeTable
-      Resource: arn:aws:dynamodb:${self:provider.region}:*:*
-
+  iamRoleStatements: ${file(./config/iam.yml)}
+  
 custom:
   defaultStage: dev
   profileTable: 
     dev: dev-profile
-    prod: test-prod-profile
+    prod: prod-profile
 
   eventTable:
     dev: dev-event
-    prod: test-prod-event
+    prod: prod-event
   
   sequenceTable:
     dev: dev-sequence
-    prod: test-prod-sequence
+    prod: prod-sequence
 
-  profileCheckSodaIdIndex: check-sodaId-index
-  profileCheckEmailIndex: check-email-index
-  profileSodaIdIndex: sodaId-index
-  eventStatusStartIndex: status-start-index
-  eventStatusCountOfLikeIndex: status-countOfLike-index
-  eventStatusUpdateTimeIndex: status-updateTime-index
-  snsCancelTopic: ${file(myCustomFile.yml):SNS_CANCEL_TOPIC}
-  s3JsonBucket: soda-json
-  s3ImageBucket: soda-test-image
-  
+
 resources:
   Resources:
     EventDynamoDbTable:

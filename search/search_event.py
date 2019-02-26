@@ -3,8 +3,6 @@ import boto3
 import os
 
 dynamodb = boto3.resource('dynamodb')
-endPoint = os.environ['CLOUD_SEARCH_ENDPOINT']
-cloudSearch = boto3.client('cloudsearchdomain', endpoint_url = endPoint)
 
 def search_event(event, context):
     try:

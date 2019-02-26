@@ -6,8 +6,6 @@ from boto3.dynamodb.conditions import Key, Attr
 from timeline.model_timeline import Query
 
 dynamodb = boto3.resource('dynamodb')
-# endPoint = os.environ['CLOUD_SEARCH_ENDPOINT']
-# cloudSearch = boto3.client('cloudsearchdomain', endpoint_url = endPoint)
 profileTableName = os.environ['PROFILE_TABLE']
 eventTableName = os.environ['EVENT_TABLE']
 statusStartIndex = os.environ['EVENT_STATUS_START_INDEX']
