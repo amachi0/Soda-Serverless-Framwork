@@ -141,319 +141,160 @@ resources:
 
 
 functions:
-  detail_event:
+  get_event:
     handler: event/detail_event.detail_event
     timeout: 3
-    events:
-      - http:
-          path: event
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                eventId: true
-                identityId: true
+    events: ${file(./config/events.yml):get_event}
 
-  create_event:
+  post_event:
     handler: event/create_event.create_event
     timeout: 3
-    events:
-      - http:
-          path: event
-          method: post
-          cors: true
+    events: ${file(./config/events.yml):post_event}
 
-  change_event:
+  put_event:
     handler: event/change_event.change_event
     timeout: 3
-    events:
-      - http:
-          path: event
-          method: put
-          cors: true
+    events: ${file(./config/events.yml):put_event}
 
   delete_event:
     handler: event/delete_event.delete_event
     timeout: 3
-    events:
-      - http:
-          path: event
-          method: delete
-          cors: true
+    events: ${file(./config/events.yml):delete_event}
+      
+  list_events_of_home:
+    handler: timeline/timeline_home.timeline_home
+    timeout: 3
+    events: ${file(./config/events.yml):list_events_of_home}
 
+  list_events_of_hot:
+    handler: timeline/timeline_hot.timeline_hot
+    timeout: 3
+    events: ${file(./config/events.yml):list_events_of_hot}
+
+  list_events_of_new:
+    handler: timeline/timeline_new.timeline_new
+    timeout: 3
+    events: ${file(./config/events.yml):list_events_of_new}
+  
+  list_events_of_favorite:
+    handler: timeline/timeline_favorite.timeline_favorite
+    timeout: 3
+    events: ${file(./config/events.yml):list_events_of_favorite}
+  
+  list_events_of_user:
+    handler: created_event/created_event.created_event
+    timeout: 3
+    events: ${file(./config/events.yml):list_events_of_user}
+
+  post_profile:
+    handler: profile/create_user.create_user
+    timeout: 3
+    events: ${file(./config/events.yml):post_profile}
+
+  put_profile:
+    handler: profile/change_profile.change_profile
+    timeout: 3
+    events: ${file(./config/events.yml):put_profile}
+  
+  get_profile_from_soda_id:
+    handler: profile/get_profile.get_profile
+    timeout: 3
+    events: ${file(./config/events.yml):get_profile_from_soda_id}
+
+  get_profile_from_event_id:
+    handler: organizer_info/organizer_info.organizer_info
+    timeout: 3
+    events: ${file(./config/events.yml):get_profile_from_event_id}
+  
+  get_can_use_soda_id:
+    handler: session/check_soda_id.check_soda_id
+    timeout: 3
+    events: ${file(./config/events.yml):get_can_use_soda_id}
+
+  get_can_use_email:
+    handler: session/check_email.check_email
+    timeout: 3
+    events: ${file(./config/events.yml):get_can_use_email}
+  
+  get_soda_id_from_identity_id:
+    handler: id/get_soda_id.get_soda_id
+    timeout: 3
+    events: ${file(./config/events.yml):get_soda_id_from_identity_id}
+  
+  post_favorite:
+    handler: favorite/push_favorite.push_favorite
+    timeout: 3
+    events: ${file(./config/events.yml):post_favorite}
+
+  delete_favorite:
+    handler: favorite/cancel_favorite.cancel_favorite
+    timeout: 3
+    events: ${file(./config/events.yml):delete_favorite}
+  
+  get_turms:
+    handler: get_json/terms.terms
+    timeout: 3
+    events: ${file(./config/events.yml):get_turms}
+
+  get_faqs:
+    handler: get_json/faqs.faqs
+    timeout: 3
+    events: ${file(./config/events.yml):get_faqs}
+
+  get_universities:
+    handler: get_json/university.university
+    timeout: 3
+    events: ${file(./config/events.yml):get_universities}
+  
+  post_contact:
+    handler: contact/contact.contact
+    timeout: 3
+    events: ${file(./config/events.yml):post_contact}
+  
   cancel_sns:
     handler: sns/cancel_sns.cancel_sns
     timeout: 10
-    events:
-      - sns:
-          ${self:custom.snsCancelTopic}
-
-  turms:
-    handler: get_json/terms.terms
-    timeout: 3
-    events:
-      - http:
-          path: terms
-          method: get
-          cors: true
-
-  faqs:
-    handler: get_json/faqs.faqs
-    timeout: 3
-    events:
-      - http:
-          path: faqs
-          method: get
-          cors: true
-
-  university:
-    handler: get_json/university.university
-    timeout: 3
-    events:
-      - http:
-          path: university
-          method: get
-          cors: true
-
-  contact:
-    handler: contact/contact.contact
-    timeout: 3
-    events: 
-      - http:
-          path: contact
-          method: post
-          cors: true
-
-  push_favorite:
-    handler: favorite/push_favorite.push_favorite
-    timeout: 3
-    events:
-      - http:
-          path: favorite
-          method: post
-          cors: true
-
-  cancel_favorite:
-    handler: favorite/cancel_favorite.cancel_favorite
-    timeout: 3
-    events:
-      - http:
-          path: favorite
-          method: delete
-          cors: true
-
-  check_soda_id:
-    handler: session/check_soda_id.check_soda_id
-    timeout: 3
-    events:
-      - http:
-          path: check_soda_id
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                sodaId: true
-
-  check_email:
-    handler: session/check_email.check_email
-    timeout: 3
-    events:
-      - http:
-          path: check_email
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                email: true
-
-  get_soda_id:
-    handler: id/get_soda_id.get_soda_id
-    timeout: 3
-    events:
-      - http:
-          path: id
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                identityId: true
-
-  created_event:
-    handler: created_event/created_event.created_event
-    timeout: 3
-    events:
-      - http:
-          path: created_event
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                sodaId: true
-                page: true
-
-  organizer_info:
-    handler: organizer_info/organizer_info.organizer_info
-    timeout: 3
-    events:
-      - http:
-          path: organizer
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                eventId: true
-
-  get_profile:
-    handler: profile/get_profile.get_profile
-    timeout: 3
-    events:
-      - http:
-          path: profile
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                sodaId: true
-
-  create_user:
-    handler: profile/create_user.create_user
-    timeout: 3
-    events:
-      - http:
-          path: profile
-          method: post
-          cors: true
-
-  change_profile:
-    handler: profile/change_profile.change_profile
-    timeout: 3
-    events:
-      - http:
-          path: profile
-          method: put
-          cors: true
-
-  search_event:
-    handler: search/search_event.search_event
-    timeout: 3
-    events:
-      - http:
-          path: search
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                keyword: true
-                page: true
-
-  timeline_favorite:
-    handler: timeline/timeline_favorite.timeline_favorite
-    timeout: 3
-    events:
-      - http:
-          path: timeline/favorite
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                sodaId: true
-                page: true
-
-  timeline_home:
-    handler: timeline/timeline_home.timeline_home
-    timeout: 3
-    events:
-      - http:
-          path: timeline/home
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                identityId: true
-                page: true
-
-  timeline_hot:
-    handler: timeline/timeline_hot.timeline_hot
-    timeout: 3
-    events:
-      - http:
-          path: timeline/hot
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                identityId: true
-                page: true
-
-  timeline_new:
-    handler: timeline/timeline_new.timeline_new
-    timeout: 3
-    events:
-      - http:
-          path: timeline/new
-          method: get
-          cors: true
-          request:
-            parameters:
-              querystrings:
-                identityId: true
-                page: true
-
-  create_template:
+    events: ${file(./config/events.yml):cancel_sns}
+  
+  post_event_template:
     handler: template/create_template.create_template
     timeout: 3
-    events:
-      - http:
-          path: template
-          method: post
-          cors: true
+    events: ${file(./config/events.yml):post_event_template}
   
-  delete_template:
-    handler: template/delete_template.delete_template
-    timeout: 3
-    events:
-      - http:
-          path: template
-          method: delete
-          cors: true
-  
-  change_template:
+  put_event_template:
     handler: template/change_template.change_template
     timeout: 3
-    events:
-      - http:
-          path: template
-          method: put
-          cors: true
-
-  upload_binary:
+    events: ${file(./config/events.yml):put_event_template}
+  
+  delete_event_template:
+    handler: template/delete_template.delete_template
+    timeout: 3
+    events: ${file(./config/events.yml):delete_event_template}
+  
+  post_image_to_s3:
     handler: upload_binary/upload_binary.upload_binary
     timeout: 3
-    events:
-      - http:
-          path: upload_binary
-          method: post
-          cors: true
+    events: ${file(./config/events.yml):post_image_to_s3}
   
-  finish_event:
+  edit_finish_event:
     handler: schedule/finish_event.finish_event
     timeout: 3
-    events:
-      - schedule: cron(0 15 * * ? *)
+    events: ${file(./config/events.yml):edit_finish_event}
   
   send_mail_a_day:
     handler: schedule/send_mail_a_day.send_mail_a_day
     timeout: 20
-    events:
-      - schedule: cron(0 23 * * ? *)
+    events: ${file(./config/events.yml):send_mail_a_day}
+  
+  # search_events:
+  #   handler: search/search_event.search_event
+  #   timeout: 3
+  #   events: ${file(./config/events.yml):search_events}
+
+  
+
+  
+  
+  
+  
+  

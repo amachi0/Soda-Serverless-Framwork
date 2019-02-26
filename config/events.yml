@@ -1,0 +1,226 @@
+get_event:
+  - http:
+      path: event
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            eventId: true
+            identityId: true
+
+post_event:
+  - http:
+      path: event
+      method: post
+      cors: true
+
+put_event:
+  - http:
+      path: event
+      method: put
+      cors: true
+
+delete_event:
+  - http:
+      path: event
+      method: delete
+      cors: true
+
+list_events_of_home:
+  - http:
+      path: timeline/home
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            identityId: true
+            page: true
+
+list_events_of_hot:
+  - http:
+      path: timeline/hot
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            identityId: true
+            page: true
+
+list_events_of_new:
+  - http:
+      path: timeline/new
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            identityId: true
+            page: true
+
+list_events_of_favorite:
+  - http:
+      path: timeline/favorite
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            sodaId: true
+            page: true
+
+list_events_of_user:
+  - http:
+      path: created_event
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            sodaId: true
+            page: true
+
+post_profile:
+  - http:
+      path: profile
+      method: post
+      cors: true
+
+put_profile:
+  - http:
+      path: profile
+      method: put
+      cors: true
+
+get_profile_from_soda_id:
+  - http:
+      path: profile
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            sodaId: true
+
+get_profile_from_event_id:
+  - http:
+      path: organizer
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            eventId: true
+
+get_can_use_soda_id:
+  - http:
+      path: check_soda_id
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            sodaId: true
+
+get_can_use_email:
+  - http:
+      path: check_email
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            email: true
+
+get_soda_id_from_identity_id:
+  - http:
+      path: id
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            identityId: true
+
+post_favorite:
+  - http:
+      path: favorite
+      method: post
+      cors: true
+
+delete_favorite:
+  - http:
+      path: favorite
+      method: delete
+      cors: true
+
+get_turms:
+  - http:
+      path: terms
+      method: get
+      cors: true
+
+get_faqs:
+  - http:
+      path: faqs
+      method: get
+      cors: true
+
+get_universities:
+  - http:
+      path: university
+      method: get
+      cors: true
+
+post_contact:
+  - http:
+      path: contact
+      method: post
+      cors: true
+
+cancel_sns:
+  - sns:
+      ${self:provider.environment.SNS_CANCEL_TOPIC}
+
+post_event_template:
+  - http:
+      path: template
+      method: post
+      cors: true
+
+put_event_template:
+  - http:
+      path: template
+      method: put
+      cors: true
+
+delete_event_template:
+  - http:
+      path: template
+      method: delete
+      cors: true
+
+post_image_to_s3:
+  - http:
+      path: upload_binary
+      method: post
+      cors: true
+
+edit_finish_event:
+  - schedule: cron(0 15 * * ? *)
+
+send_mail_a_day:
+  - schedule: cron(0 23 * * ? *)
+
+search_events:
+  - http:
+      path: search
+      method: get
+      cors: true
+      request:
+        parameters:
+          querystrings:
+            keyword: true
+            page: true
