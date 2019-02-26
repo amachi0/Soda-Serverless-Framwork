@@ -2,7 +2,7 @@ import os
 import json
 import boto3
 import time
-from decimalencoder import DecimalEncoder
+from app.util.decimalencoder import DecimalEncoder
 from datetime import datetime as dt
 
 dynamodb = boto3.resource('dynamodb')

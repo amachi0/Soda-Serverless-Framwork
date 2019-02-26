@@ -1,9 +1,9 @@
 import json
 import boto3
 import os
-from decimalencoder import DecimalEncoder
+from app.util.decimalencoder import DecimalEncoder
 from boto3.dynamodb.conditions import Key, Attr
-from timeline.model_timeline import Query
+from app.data.model_timeline import Query
 
 dynamodb = boto3.resource('dynamodb')
 profileTableName = os.environ['PROFILE_TABLE']

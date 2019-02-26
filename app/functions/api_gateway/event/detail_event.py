@@ -1,7 +1,7 @@
 import os
 import json
 import boto3
-from decimalencoder import DecimalEncoder
+from app.util.decimalencoder import DecimalEncoder
 
 dynamodb = boto3.resource('dynamodb')
 eventTableName = os.environ['EVENT_TABLE']

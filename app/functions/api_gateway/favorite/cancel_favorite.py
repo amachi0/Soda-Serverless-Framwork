@@ -2,7 +2,7 @@ import json
 import boto3
 import traceback
 import os
-from decimalencoder import DecimalEncoder
+from app.util.decimalencoder import DecimalEncoder
 
 dynamodb = boto3.resource('dynamodb')
 profileTableName = os.environ['PROFILE_TABLE']

@@ -24,7 +24,6 @@ custom:
     dev: dev-sequence
     prod: prod-sequence
 
-
 resources:
   - ${file(./config/cfn/event_table.yml)}
   - ${file(./config/cfn/profile_table.yml)}
@@ -32,159 +31,146 @@ resources:
 
 functions:
   get_event:
-    handler: event/detail_event.detail_event
+    handler: app/functions/api_gateway/event/detail_event.detail_event
     timeout: 3
     events: ${file(./config/events.yml):get_event}
 
   post_event:
-    handler: event/create_event.create_event
+    handler: app/functions/api_gateway/event/create_event.create_event
     timeout: 3
     events: ${file(./config/events.yml):post_event}
 
   put_event:
-    handler: event/change_event.change_event
+    handler: app/functions/api_gateway/event/change_event.change_event
     timeout: 3
     events: ${file(./config/events.yml):put_event}
 
   delete_event:
-    handler: event/delete_event.delete_event
+    handler: app/functions/api_gateway/event/delete_event.delete_event
     timeout: 3
     events: ${file(./config/events.yml):delete_event}
       
   list_events_of_home:
-    handler: timeline/timeline_home.timeline_home
+    handler: app/functions/api_gateway/timeline/timeline_home.timeline_home
     timeout: 3
     events: ${file(./config/events.yml):list_events_of_home}
 
   list_events_of_hot:
-    handler: timeline/timeline_hot.timeline_hot
+    handler: app/functions/api_gateway/timeline/timeline_hot.timeline_hot
     timeout: 3
     events: ${file(./config/events.yml):list_events_of_hot}
 
   list_events_of_new:
-    handler: timeline/timeline_new.timeline_new
+    handler: app/functions/api_gateway/timeline/timeline_new.timeline_new
     timeout: 3
     events: ${file(./config/events.yml):list_events_of_new}
   
   list_events_of_favorite:
-    handler: timeline/timeline_favorite.timeline_favorite
+    handler: app/functions/api_gateway/timeline/timeline_favorite.timeline_favorite
     timeout: 3
     events: ${file(./config/events.yml):list_events_of_favorite}
   
   list_events_of_user:
-    handler: created_event/created_event.created_event
+    handler: app/functions/api_gateway/created_event/created_event.created_event
     timeout: 3
     events: ${file(./config/events.yml):list_events_of_user}
 
   post_profile:
-    handler: profile/create_user.create_user
+    handler: app/functions/api_gateway/profile/create_user.create_user
     timeout: 3
     events: ${file(./config/events.yml):post_profile}
 
   put_profile:
-    handler: profile/change_profile.change_profile
+    handler: app/functions/api_gateway/profile/change_profile.change_profile
     timeout: 3
     events: ${file(./config/events.yml):put_profile}
   
   get_profile_from_soda_id:
-    handler: profile/get_profile.get_profile
+    handler: app/functions/api_gateway/profile/get_profile.get_profile
     timeout: 3
     events: ${file(./config/events.yml):get_profile_from_soda_id}
 
   get_profile_from_event_id:
-    handler: organizer_info/organizer_info.organizer_info
+    handler: app/functions/api_gateway/organizer_info/organizer_info.organizer_info
     timeout: 3
     events: ${file(./config/events.yml):get_profile_from_event_id}
   
   get_can_use_soda_id:
-    handler: session/check_soda_id.check_soda_id
+    handler: app/functions/api_gateway/session/check_soda_id.check_soda_id
     timeout: 3
     events: ${file(./config/events.yml):get_can_use_soda_id}
 
   get_can_use_email:
-    handler: session/check_email.check_email
+    handler: app/functions/api_gateway/session/check_email.check_email
     timeout: 3
     events: ${file(./config/events.yml):get_can_use_email}
   
   get_soda_id_from_identity_id:
-    handler: id/get_soda_id.get_soda_id
+    handler: app/functions/api_gateway/id/get_soda_id.get_soda_id
     timeout: 3
     events: ${file(./config/events.yml):get_soda_id_from_identity_id}
   
   post_favorite:
-    handler: favorite/push_favorite.push_favorite
+    handler: app/functions/api_gateway/favorite/push_favorite.push_favorite
     timeout: 3
     events: ${file(./config/events.yml):post_favorite}
 
   delete_favorite:
-    handler: favorite/cancel_favorite.cancel_favorite
+    handler: app/functions/api_gateway/favorite/cancel_favorite.cancel_favorite
     timeout: 3
     events: ${file(./config/events.yml):delete_favorite}
   
   get_turms:
-    handler: get_json/terms.terms
+    handler: app/functions/api_gateway/get_json/terms.terms
     timeout: 3
     events: ${file(./config/events.yml):get_turms}
 
   get_faqs:
-    handler: get_json/faqs.faqs
+    handler: app/functions/api_gateway/get_json/faqs.faqs
     timeout: 3
     events: ${file(./config/events.yml):get_faqs}
 
   get_universities:
-    handler: get_json/university.university
+    handler: app/functions/api_gateway/get_json/university.university
     timeout: 3
     events: ${file(./config/events.yml):get_universities}
   
   post_contact:
-    handler: contact/contact.contact
+    handler: app/functions/api_gateway/contact/contact.contact
     timeout: 3
     events: ${file(./config/events.yml):post_contact}
   
   cancel_sns:
-    handler: sns/cancel_sns.cancel_sns
+    handler: app/functions/sns/cancel_sns.cancel_sns
     timeout: 10
     events: ${file(./config/events.yml):cancel_sns}
   
   post_event_template:
-    handler: template/create_template.create_template
+    handler: app/functions/api_gateway/template/create_template.create_template
     timeout: 3
     events: ${file(./config/events.yml):post_event_template}
   
   put_event_template:
-    handler: template/change_template.change_template
+    handler: app/functions/api_gateway/template/change_template.change_template
     timeout: 3
     events: ${file(./config/events.yml):put_event_template}
   
   delete_event_template:
-    handler: template/delete_template.delete_template
+    handler: app/functions/api_gateway/template/delete_template.delete_template
     timeout: 3
     events: ${file(./config/events.yml):delete_event_template}
   
   post_image_to_s3:
-    handler: upload_binary/upload_binary.upload_binary
+    handler: app/functions/api_gateway/upload_binary/upload_binary.upload_binary
     timeout: 3
     events: ${file(./config/events.yml):post_image_to_s3}
   
   edit_finish_event:
-    handler: schedule/finish_event.finish_event
+    handler: app/functions/schedule/finish_event.finish_event
     timeout: 3
     events: ${file(./config/events.yml):edit_finish_event}
   
   send_mail_a_day:
-    handler: schedule/send_mail_a_day.send_mail_a_day
+    handler: app/functions/schedule/send_mail_a_day.send_mail_a_day
     timeout: 20
     events: ${file(./config/events.yml):send_mail_a_day}
-  
-  # search_events:
-  #   handler: search/search_event.search_event
-  #   timeout: 3
-  #   events: ${file(./config/events.yml):search_events}
-
-  
-
-  
-  
-  
-  
-  

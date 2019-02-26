@@ -1,16 +1,16 @@
 import json
 import boto3
 import os
-from decimalencoder import DecimalEncoder
+from app.util.decimalencoder import DecimalEncoder
 from boto3.dynamodb.conditions import Key, Attr
-from timeline.model_timeline import Query
+from app.data.model_timeline import Query
 
 dynamodb = boto3.resource('dynamodb')
 profileTableName = os.environ['PROFILE_TABLE']
 eventTableName = os.environ['EVENT_TABLE']
-statusCountOfLikeIndex = os.environ['EVENT_STATUS_COUNTOFLIKE_INDEX']
+statusStartIndex = os.environ['EVENT_STATUS_START_INDEX']
 
-def timeline_hot(event, context):
+def timeline_home(event, context):
     try:
         identityId = event['queryStringParameters']['identityId']
         startIndex = int(event['queryStringParameters']['startIndex'])
@@ -40,33 +40,33 @@ def timeline_hot(event, context):
                 favoriteList = itemProfile['Item']['favoriteEvent']
         
         if startIndex == 0 and identityId == "null":
-            model = Query(statusCountOfLikeIndex)
+            model = Query(statusStartIndex)
             result = model.queryFirstNoUniversity()
         
         elif startIndex == 0 and identityId != "null":
-            model = Query(statusCountOfLikeIndex)
+            model = Query(statusStartIndex)
             result = model.queryFirst(universities)
 
         elif startIndex != 0 and identityId == "null":
             lastEventId = event['queryStringParameters']['lastEventId']
-            lastCountOfLike = event['queryStringParameters']['lastCountOfLike']
+            lastStart = event['queryStringParameters']['lastStartTime']
             startKey = {
                 "eventId" : int(lastEventId),
-                "countOfLike" : int(lastCountOfLike),
+                "start" : int(lastStart),
                 "status" : "0_false"
             }
-            model = Query(statusCountOfLikeIndex)
+            model = Query(statusStartIndex)
             result = model.queryNextNoUniversity(startKey)
         
         elif startIndex != 0 and identityId != "null":
             lastEventId = event['queryStringParameters']['lastEventId']
-            lastCountOfLike = event['queryStringParameters']['lastCountOfLike']
+            lastStart = event['queryStringParameters']['lastStartTime']
             startKey = {
                 "eventId" : int(lastEventId),
-                "countOfLike" : int(lastCountOfLike),
+                "start" : int(lastStart),
                 "status" : "0_false"
             }
-            model = Query(statusCountOfLikeIndex)
+            model = Query(statusStartIndex)
             result = model.queryNext(universities, startKey)
         
         print(result)
