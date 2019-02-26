@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+from app.data.profile import Profile
 
 dynamodb = boto3.resource('dynamodb')
 profileTableName = os.environ['PROFILE_TABLE']
