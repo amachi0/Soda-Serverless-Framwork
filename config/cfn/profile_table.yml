@@ -1,0 +1,56 @@
+Resources:
+  ProfileDynamoDbTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: identityId
+          AttributeType: S
+        -
+          AttributeName: sodaId
+          AttributeType: S
+        -
+          AttributeName: email
+          AttributeType: S
+      KeySchema:
+        -
+          AttributeName: identityId
+          KeyType: HASH
+      GlobalSecondaryIndexes:
+        -
+          IndexName: check-sodaId-index
+          KeySchema:
+            -
+              AttributeName: sodaId
+              KeyType: HASH
+          Projection:
+            ProjectionType: KEYS_ONLY
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+        -
+          IndexName: check-email-index
+          KeySchema:
+            -
+              AttributeName: email
+              KeyType: HASH
+          Projection:
+            ProjectionType: KEYS_ONLY
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+        -
+          IndexName: sodaId-index
+          KeySchema:
+            -
+              AttributeName: sodaId
+              KeyType: HASH
+          Projection:
+              ProjectionType: ALL
+          ProvisionedThroughput:
+              ReadCapacityUnits: 5
+              WriteCapacityUnits: 5
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      TableName: ${self:custom.profileTable.${self:provider.stage}}

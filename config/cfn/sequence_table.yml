@@ -1,0 +1,17 @@
+Resources:
+  SequenceDynamoDbTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: tableName
+          AttributeType: S
+        
+      KeySchema:
+        -
+          AttributeName: tableName
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      TableName: ${self:custom.sequenceTable.${self:provider.stage}}
