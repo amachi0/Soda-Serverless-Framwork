@@ -18,5 +18,4 @@ var/
 
 # Serverless directories
 .serverless
-myCustomFile.yml
-__pycache__/
+.vscode
