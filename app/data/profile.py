@@ -1,7 +1,7 @@
 class Profile:
-    def __init__(self, identityId, sodaId, email, universities, name=None, 
-                    urlData=None, profile=None, twitter=None, facebook=None, 
-                    instagram=None, favoriteEvent=[], myEvent=[], templates=[]):
+    def __init__(self, identityId, sodaId=None, email=None, universities=[], name=None, 
+                    urlData=None, profile=None, twitter=None, facebook=None, instagram=None, 
+                    favoriteEvent=[], myEvent=[], templates=[], isAcceptMail=True):
         
         self.identityId = identityId
         self.sodaId = sodaId
@@ -16,8 +16,7 @@ class Profile:
         self.favoriteEvent = favoriteEvent
         self.myEvent = myEvent
         self.templates = templates
-        
-        self.isAcceptMail = True
+        self.isAcceptMail = isAcceptMail
 
     def hasName(self):
         if self.name:

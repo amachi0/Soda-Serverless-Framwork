@@ -28,3 +28,24 @@ class ProfileTable(Profile):
                 "isAcceptMail" : profile.isAcceptMail,
             }
         )
+    
+    def changeProfile(self, profile=Profile):
+        self.table.update_item(
+            Key = {
+                "identityId" : profile.identityId
+            },
+            UpdateExpression = "set urlData=:b,#a=:c,universities=:d,isAcceptMail=:e,profile=:f,twitter=:g,facebook=:h,instagram=:i",
+            ExpressionAttributeNames = {
+                '#a' : "name"
+            },
+            ExpressionAttributeValues = {
+                ':b' : profile.urlData,
+                ':c' : profile.name,
+                ':d' : profile.universities,
+                ':e' : profile.isAcceptMail,
+                ':f' : profile.profile,
+                ':g' : profile.twitter,
+                ':h' : profile.facebook,
+                ':i' : profile.instagram
+            }
+        )

@@ -3,3 +3,4 @@ def emptystrToNoneInDict(item):
         if(type(v) is str):
             if(v == ""):
                 item[k] = None
+    return item
