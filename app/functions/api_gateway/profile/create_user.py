@@ -6,6 +6,20 @@ from app.util.emptystr_to_none import emptystrToNoneInDict
 from app.data.profile import Profile
 from app.data.source.profile_table import ProfileTable
 
+''' パラメーター
+{
+  "body": {
+    "identityId": "amachi1",
+    "sodaId": "amachi1",
+    "email": "shunsuke-1103@ezweb.ne.jp",
+    "urlData": "test",
+    "name": "test",
+    "universities": [
+      "立命館"
+    ]
+  }
+}
+'''
 
 def create_user(event, context):
     try:
