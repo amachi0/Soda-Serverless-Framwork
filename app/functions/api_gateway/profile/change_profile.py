@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+from app.util.emptystr_to_none import emptystrToNoneInDict
 
 dynamodb = boto3.resource('dynamodb')
 profileTableName = os.environ['PROFILE_TABLE']
@@ -27,6 +28,7 @@ def change_profile(event, context):
             ProjectionExpression = "identityId"
         )
         print(user)
+
 
         urlData = null_default(param, "urlData")
         name = null_default(param, "name")
