@@ -47,12 +47,6 @@
     - "sns:Publish"
 
 - Effect: Allow
-  Resource: arn:aws:cloudsearch:${self:provider.region}:*:domain/*
-  Action: 
-    - "cloudsearch:search"
-    - "cloudsearch:document"
-
-- Effect: Allow
   Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.eventTable.${self:provider.stage}}/index/*
   Action:
     - "dynamodb:Query"
