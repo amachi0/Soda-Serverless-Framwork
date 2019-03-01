@@ -15,17 +15,23 @@ def change_event(event, context):
             end = None
         else:
             end = int(param['end'])
+        
+        status = "0_false"
+        isPrivate = param['isPrivate']
+        if(isPrivate):
+            status = "0_true"
 
         table = dynamodb.Table(eventTableName)
         table.update_item(
             Key = {
                 "eventId" : eventId
             },
-            UpdateExpression = "set urlData=:a,#s=:b,#e=:c,university=:d,eventName=:e,price=:f,#l=:g,qualification=:h,detail=:i,contact=:j,entry=:k,sponsor=:l,isPrivate=:m",
+            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k",
             ExpressionAttributeNames = {
-                '#s' : "start",
-                '#e' : "end",
-                '#l' : "location"
+                '#a' : "start",
+                '#b' : "end",
+                '#c' : "location",
+                '#d' : "status"
             },
             ExpressionAttributeValues = {
                 ':a' : param['urlData'],
@@ -38,9 +44,7 @@ def change_event(event, context):
                 ':h' : param['qualification'],
                 ':i' : param['detail'],
                 ':j' : param['contact'],
-                ':k' : param['entry'],
-                ':l' : param['sponsor'],
-                ':m' : param['isPrivate']
+                ':k' : status
             }
         )
 

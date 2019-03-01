@@ -32,17 +32,24 @@ def detail_event(event, context):
                 'eventId' : eventId
             },
             ExpressionAttributeNames = {
-                    '#e' : "end",
-                    '#l' : 'location',
-                    '#s' : 'start'
+                    '#a' : "end",
+                    '#b' : 'location',
+                    '#c' : 'start',
+                    '#d' : 'status'
                 },
-            ProjectionExpression = "eventId, sodaId, contact, countOfLike, detail, #e, eventName, #l, price, qualification, #s, university, updateTime, urlData, isPrivate"
+            ProjectionExpression = "eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d"
         )
+        
         item = content['Item']
+
+        status = item['status']
+        if(status == "0_false"):
+            item['isPrivate'] = False
+        else:
+            item['isPrivate'] = True
 
         if(item['eventId'] in listFavorite):
             isFavorite = True
-        
         item['isFavorite'] = isFavorite
 
         return {
