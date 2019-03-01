@@ -2,7 +2,6 @@ import json
 import boto3
 import os
 from app.util.return_dict import *
-from app.util.emptystr_to_none import emptystrToNoneInDict
 from app.data.profile import Profile
 from app.data.source.profile_table import ProfileTable
 
@@ -23,16 +22,19 @@ from app.data.source.profile_table import ProfileTable
 '''
 
 def change_profile(event, context):
-    try:
-        param = json.loads(event['body'])
-        param = emptystrToNoneInDict(param)
-        profile = Profile(**param)
-        profileTable = ProfileTable()
-        profileTable.changeProfile(profile)
-        
-        return Successed()
+  try:
+    param = json.loads(event['body'])
+    profile = Profile(**param)
+    profile.emptystrToNone()
+    profileTable = ProfileTable()
+    profileTable.changeProfile(profile)
     
-    except:
-        import  traceback
-        traceback.print_exc()
-        return Failured()
+    returnBody = {
+      "result" : 1
+    }
+    return Successed(returnBody)
+  
+  except:
+    import  traceback
+    traceback.print_exc()
+    return Failured()

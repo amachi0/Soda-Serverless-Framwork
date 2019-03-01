@@ -1,6 +1,8 @@
 import boto3
 import os
+from boto3.dynamodb.conditions import Key, Attr
 from app.data.profile import Profile
+
 
 class ProfileTable(Profile):
     def __init__(self):
@@ -49,3 +51,12 @@ class ProfileTable(Profile):
                 ':i' : profile.instagram
             }
         )
+    
+    def getProfileFromSodaId(self, sodaId):
+        itemList = self.table.query(
+            IndexName = self.sodaIdIndex,
+            KeyConditionExpression = Key('sodaId').eq(sodaId)
+        )
+        item = itemList['Items'][0]
+        profile = Profile(**item)
+        return profile

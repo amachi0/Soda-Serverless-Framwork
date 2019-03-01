@@ -2,7 +2,6 @@ import json
 import boto3
 import os
 from app.util.return_dict import *
-from app.util.emptystr_to_none import emptystrToNoneInDict
 from app.data.profile import Profile
 from app.data.source.profile_table import ProfileTable
 
@@ -22,20 +21,24 @@ from app.data.source.profile_table import ProfileTable
 '''
 
 def create_user(event, context):
-    try:
-        param = json.loads(event['body'])
-        param = emptystrToNoneInDict(param)
-        profile = Profile(**param)
-        
-        if not profile.hasName():
-            profile.createNameFromEmail()
-        
-        profileTable = ProfileTable()
-        profileTable.insertProfile(profile)
+  try:
+    param = json.loads(event['body'])
+    profile = Profile(**param)
 
-        return Successed
+    if not profile.hasName():
+      profile.createNameFromEmail()
+    
+    profile.emptystrToNone()
+    
+    profileTable = ProfileTable()
+    profileTable.insertProfile(profile)
+
+    returnBody = {
+      "result" : 1
+    }
+    return Successed(returnBody)
         
-    except:
-        import  traceback
-        traceback.print_exc()
-        return Failured
+  except:
+    import  traceback
+    traceback.print_exc()
+    return Failured
