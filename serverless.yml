@@ -9,7 +9,11 @@ provider:
   environment: ${file(./config/environment.yml)}
 
   iamRoleStatements: ${file(./config/iam.yml)}
-  
+
+plugins: 
+ - serverless-dynamodb-local
+ - serverless-offline
+
 custom:
   defaultStage: dev
   profileTable: 
