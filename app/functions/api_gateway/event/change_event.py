@@ -5,8 +5,6 @@ from app.util.decimalencoder import DecimalEncoder
 
 dynamodb = boto3.resource('dynamodb')
 eventTableName = os.environ['EVENT_TABLE']
-endpointUrl = os.environ['CLOUD_SEARCH_DOC_ENDPOINT']
-cloudSearch = boto3.client('cloudsearchdomain', endpoint_url = endpointUrl)
 
 def change_event(event, context):
     try:

@@ -36,7 +36,7 @@ def detail_event(event, context):
                     '#l' : 'location',
                     '#s' : 'start'
                 },
-            ProjectionExpression = "eventId, sodaId, contact, countOfLike, detail, #e, eventName, #l, price, qualification, #s, university, updateTime, urlData, isPrivate, entry, sponsor"
+            ProjectionExpression = "eventId, sodaId, contact, countOfLike, detail, #e, eventName, #l, price, qualification, #s, university, updateTime, urlData, isPrivate"
         )
         item = content['Item']
 

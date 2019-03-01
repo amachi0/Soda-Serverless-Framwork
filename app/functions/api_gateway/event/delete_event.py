@@ -9,8 +9,6 @@ topic_name = os.environ['SNS_CANCEL_TOPIC']
 topic = sns.Topic(topic_name)
 event_table_name = os.environ['EVENT_TABLE']
 profile_table_name = os.environ['PROFILE_TABLE']
-endPoint = os.environ['CLOUD_SEARCH_DOC_ENDPOINT']
-cloudSearch = boto3.client('cloudsearchdomain', endpoint_url = endPoint)
 
 def delete_event(event, context):
     try:

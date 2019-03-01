@@ -6,11 +6,9 @@ from app.util.decimalencoder import DecimalEncoder
 from datetime import datetime as dt
 
 dynamodb = boto3.resource('dynamodb')
-endpointUrl = os.environ['CLOUD_SEARCH_DOC_ENDPOINT']
 sequenceTableName = os.environ['SEQUENCE_TABLE']
 eventTableName = os.environ['EVENT_TABLE']
 profileTableName = os.environ['PROFILE_TABLE']
-cloudSearch = boto3.client('cloudsearchdomain', endpoint_url = endpointUrl)
 
 def next_seq(table, tableName):
     res = table.update_item(
@@ -60,8 +58,8 @@ def create_event(event, context):
                 'qualification' : param['qualification'],
                 'detail' : param['detail'],
                 'contact' : param['contact'],
-                'entry' : param['entry'],
-                'sponsor' : param['sponsor'],
+                # 'entry' : param['entry'],
+                # 'sponsor' : param['sponsor'],
                 'status' : status,
                 'updateTime' : now,
                 'countOfLike' : 0
