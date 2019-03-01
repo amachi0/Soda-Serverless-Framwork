@@ -1,4 +1,4 @@
-service: soda-test
+service: soda
 
 provider:
   name: aws
@@ -18,20 +18,20 @@ custom:
   defaultStage: dev
   profileTable: 
     dev: dev-profile
-    prod: prod-profile
+    prod: profile
 
   eventTable:
     dev: dev-event
-    prod: prod-event
+    prod: event
   
   sequenceTable:
     dev: dev-sequence
-    prod: prod-sequence
+    prod: sequence
 
-resources:
-  - ${file(./config/cfn/event_table.yml)}
-  - ${file(./config/cfn/profile_table.yml)}
-  - ${file(./config/cfn/sequence_table.yml)}
+# resources:
+#   - ${file(./config/cfn/event_table.yml)}
+#   - ${file(./config/cfn/profile_table.yml)}
+#   - ${file(./config/cfn/sequence_table.yml)}
 
 functions:
   get_event:
@@ -146,7 +146,7 @@ functions:
   
   cancel_sns:
     handler: app/functions/sns/cancel_sns.cancel_sns
-    timeout: 10
+    timeout: 20
     events: ${file(./config/events.yml):cancel_sns}
   
   post_event_template:
