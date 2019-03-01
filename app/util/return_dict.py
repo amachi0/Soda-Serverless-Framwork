@@ -1,16 +1,17 @@
 import json
 
-def Successed():
+def Successed(body):
     return {
             'statusCode' : 200,
             'headers' : {
                 'content-type' : 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            'body' : json.dumps({"result" : 1})
+            'body' : json.dumps(body)
         }
 
 def Failured():
+    #暇やったらここにslackに通知する処理を追加
     return {
             'statusCode' : 500,
             'headers' : {
