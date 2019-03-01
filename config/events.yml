@@ -36,7 +36,9 @@ list_events_of_home:
         parameters:
           querystrings:
             identityId: true
-            page: true
+            startIndex: true
+            lastEventId: false
+            lastStartTime: false
 
 list_events_of_hot:
   - http:
@@ -47,7 +49,9 @@ list_events_of_hot:
         parameters:
           querystrings:
             identityId: true
-            page: true
+            startIndex: true
+            lastEventId: false
+            lastCountOfLikes: false
 
 list_events_of_new:
   - http:
@@ -58,7 +62,9 @@ list_events_of_new:
         parameters:
           querystrings:
             identityId: true
-            page: true
+            startIndex: true
+            lastEventId: false
+            lastUpdateTime: false
 
 list_events_of_favorite:
   - http:
