@@ -30,7 +30,7 @@ def create_user(event, context):
     
     profile.emptystrToNone()
     
-    profileTable = ProfileTable()
+    profileTable = ProfileTable(event)
     profileTable.insertProfile(profile)
 
     returnBody = {

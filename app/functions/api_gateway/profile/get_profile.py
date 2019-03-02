@@ -9,7 +9,7 @@ from app.data.source.profile_table import ProfileTable
 def get_profile(event, context):
     try:
         sodaId = event['queryStringParameters']['sodaId']
-        profileTable = ProfileTable()
+        profileTable = ProfileTable(event)
         profile = profileTable.getProfileFromSodaId(sodaId)
         profile.noneToEmptystr()
         res = {
@@ -23,6 +23,7 @@ def get_profile(event, context):
             "universities" : profile.universities,
             "templates" : profile.templates
         }
+        print(res)
         return Successed(res)
     
     except:

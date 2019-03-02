@@ -26,7 +26,7 @@ def change_profile(event, context):
     param = json.loads(event['body'])
     profile = Profile(**param)
     profile.emptystrToNone()
-    profileTable = ProfileTable()
+    profileTable = ProfileTable(event)
     profileTable.changeProfile(profile)
     
     returnBody = {
