@@ -34,4 +34,4 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
-      TableName: ${self:custom.eventTable.${self:provider.stage}}
+      TableName: dev-event
