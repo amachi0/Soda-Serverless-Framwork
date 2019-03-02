@@ -1,0 +1,19 @@
+{
+    "contact" : "fa",
+    "countOfLike" : 1,
+    "detail" : "テストのイベント",
+    "end" : 1544230800,
+    "eventId" : 5,
+    "eventName" : "テスト",
+    "favorite" : [],
+    "identityId" : "ap-northeast-1:6374dcd6-d4e2-425b-8ffc-9c364dbc4020",
+    "location" : "fa",
+    "price" : "fa",
+    "qualification" : "fa",
+    "start" : 1544230800,
+    "status" : "0_false",
+    "university" : "立命館大学",
+    "updateTime" : 1544233408,
+    "urlData" : "https://s3-ap-northeast-1.amazonaws.com/soda-test-image/a58d5bb6-39a6-4a20-a076-bcff53a03cb5.png"
+
+}
