@@ -5,9 +5,14 @@ from app.data.profile import Profile
 
 
 class ProfileTable(Profile):
-    def __init__(self):
+    def __init__(self, event):
         dynamodb = boto3.resource('dynamodb')
         tableName = os.environ['PROFILE_TABLE']
+
+        if 'isOffline' in event and event['isOffline']:
+            dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
+            tableName = "local-profile"
+        
         self.table = dynamodb.Table(tableName)
         self.sodaIdIndex = os.environ['PROFILE_SODA_ID_INDEX']
     
