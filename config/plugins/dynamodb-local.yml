@@ -1,0 +1,14 @@
+start:
+  port: 8000
+  inMemory: true
+  migrate: true
+  seed: true
+seed:
+  development:
+    sources:
+      - table: dev-profile
+        sources: [./config/migrations/profile.json]
+      - table: dev-event
+        sources: [./config/migrations/event.json]
+      - table: dev-sequence
+        sources: [./config/migrations/sequence.json]
