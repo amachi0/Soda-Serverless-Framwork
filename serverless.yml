@@ -10,12 +10,12 @@ provider:
 
   iamRoleStatements: ${file(./config/iam.yml)}
 
-plugins: 
- - serverless-dynamodb-local
- - serverless-offline
-
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
 custom:
   defaultStage: dev
+  
   profileTable: 
     dev: dev-profile
     prod: profile
@@ -27,11 +27,21 @@ custom:
   sequenceTable:
     dev: dev-sequence
     prod: sequence
+  
+  serverless-offline: 
+    port: 4000
+  
+  dynamodb:  ${file(./config/plugins/dynamodb-local.yml)}
 
-# resources:
-#   - ${file(./config/cfn/event_table.yml)}
-#   - ${file(./config/cfn/profile_table.yml)}
-#   - ${file(./config/cfn/sequence_table.yml)}
+package:
+  exclude:
+    - .vscode/**
+    - node_modules/**
+
+resources:
+  - ${file(./config/cfn/event_table.yml)}
+  - ${file(./config/cfn/profile_table.yml)}
+  - ${file(./config/cfn/sequence_table.yml)}
 
 functions:
   get_event:
