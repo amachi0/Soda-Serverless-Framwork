@@ -1,77 +1,48 @@
-import os
-import json
-import boto3
-from app.util.decimalencoder import DecimalEncoder
-
-dynamodb = boto3.resource('dynamodb')
-eventTableName = os.environ['EVENT_TABLE']
-profileTableName = os.environ['PROFILE_TABLE']
+from app.data.profile import Profile
+from app.data.source.profile_table import ProfileTable
+from app.data.source.event_table import EventTable
+from app.util.return_dict import Successed, Failured
 
 def detail_event(event, context):
     try:
-        eventId = int(event['queryStringParameters']['eventId'])
-        identityId = event['queryStringParameters']['identityId']
+        param = event['queryStringParameters']
+        eventId = int(param['eventId'])
+        identityId = param['identityId']
+
         listFavorite = []
-        isFavorite = False
-        
         if(identityId != "null"):
-            profileTable = dynamodb.Table(profileTableName)
-            user = profileTable.get_item(
-                Key = {
-                    'identityId' : identityId
-                },
-                ProjectionExpression = "favoriteEvent"
-            )
+            profileTable = ProfileTable(event)
+            profile = profileTable.getFromIdentityId(identityId, "favoriteEvent")
+            listFavorite = profile.favoriteEvent
+            
+        eventTable = EventTable(event)
+        event = eventTable.getDetail(eventId)
 
-            if("favoriteEvent" in user['Item']):
-                listFavorite.extend(user['Item']['favoriteEvent'])
-        
-        table = dynamodb.Table(eventTableName)
-        content = table.get_item(
-            Key = {
-                'eventId' : eventId
-            },
-            ExpressionAttributeNames = {
-                    '#a' : "end",
-                    '#b' : 'location',
-                    '#c' : 'start',
-                    '#d' : 'status'
-                },
-            ProjectionExpression = "eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d"
-        )
-        
-        item = content['Item']
-
-        status = item['status']
-        if(status == "0_false"):
-            item['isPrivate'] = False
-        else:
-            item['isPrivate'] = True
-
-        if(item['eventId'] in listFavorite):
+        isFavorite = False
+        if(event.eventId in listFavorite):
             isFavorite = True
-        item['isFavorite'] = isFavorite
 
-        return {
-            'statusCode' : 200,
-            'headers' : {
-                'content-type' : 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'body' : json.dumps(item, cls=DecimalEncoder)
+        res = {
+            "eventId": event.eventId,
+            "eventName": event.eventName,
+            "detail": event.detail,
+            "location": event.location,
+            "university": event.university,
+            "contact": event.contact,
+            "urlData": event.urlData,
+            "qualification": event.qualification,
+            "updateTime": event.updateTime,
+            "countOfLike": event.countOfLike,
+            "end": event.end,
+            "price": event.price,
+            "start": event.start,
+            "isPrivate": event.isPrivate,
+            "isFavorite": isFavorite
         }
+
+        return Successed(res)
     
     except:
         import traceback
         traceback.print_exc()
-        res_error = {
-            "result" : 0
-        }
-        return {
-            'statusCode' : 500,
-            'headers' : {
-                'content-type' : 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'body' : json.dumps(res_error)
-        }
+        Failured()
