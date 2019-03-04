@@ -17,6 +17,7 @@ def finish_event(event, context):
     try:
         now = time.time()
         nowDecimal = decimal.Decimal(str(now))
+        #0で始まるイベントでクエリしたい
         items = eventTable.query(
             IndexName = statusStartIndex,
             KeyConditionExpression = Key('status').eq("0_false") & Key('start').lt(nowDecimal)

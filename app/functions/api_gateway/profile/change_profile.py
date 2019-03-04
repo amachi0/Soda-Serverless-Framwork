@@ -12,7 +12,7 @@ from app.data.source.profile_table import ProfileTable
   "universities": [
     "立命館"
   ],
-  "isAccepyMail" : true,
+  "isAcceptMail" : true,
   "profile" : "よろしく",
   "twitter" : "hfnn",
   "facebook" : "hnkjfn",

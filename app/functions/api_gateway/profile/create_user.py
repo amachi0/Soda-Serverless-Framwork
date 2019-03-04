@@ -28,7 +28,7 @@ def create_user(event, context):
     
     if not profile.hasUrlData():
       profile.urlData = None
-    
+
     profileTable = ProfileTable(event)
     profileTable.insert(profile)
 
