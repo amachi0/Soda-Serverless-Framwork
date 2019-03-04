@@ -8,6 +8,23 @@ from app.data.source.event_table import EventTable
 from app.data.source.profile_table import ProfileTable
 from app.util.return_dict import Successed, Failured
 
+''' パラメーター
+{
+    "identityId": "amachi1",
+    "eventName": "テスト2",
+    "urlData": "https://nangngnainil34982379gsesssgg",
+    "university": "立命館大学",
+    "price": "500円",
+    "location": "BKC アクロスウィング",
+    "start": 1526000000,
+    "end": 1528000000,
+    "qualification": "初心者でもOK!",
+    "detail": "みんなでhtmlとcssの基本を勉強しよう",
+    "contact": "amachi@gmail.com",
+    "isPrivate": false
+}
+'''
+
 def create_event(event, context):
     try:
         param = json.loads(event['body'])
