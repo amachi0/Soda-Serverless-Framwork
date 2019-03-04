@@ -1,7 +1,7 @@
 import json
 import boto3
 import os
-from app.util.return_dict import *
+from app.util.return_dict import Successed, Failured
 from app.data.profile import Profile
 from app.data.source.profile_table import ProfileTable
 
@@ -32,7 +32,7 @@ def create_user(event, context):
       profile.urlData = None
     
     profileTable = ProfileTable(event)
-    profileTable.insertProfile(profile)
+    profileTable.insert(profile)
 
     returnBody = {
       "result" : 1
