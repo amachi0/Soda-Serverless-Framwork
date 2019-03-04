@@ -78,10 +78,12 @@ class ProfileTable(Profile):
         return profile
     
     def getFromIdentityId(self, identityId, projectionExpression=None):
-        itemProfile = self.table.get_item(
+        item = self.table.get_item(
             Key = {
                 "identityId" : identityId
             },
             ProjectionExpression = projectionExpression
         )
-        return itemProfile["Item"]
+        param = item['Item']
+        profile = Profile(**param)
+        return profile
