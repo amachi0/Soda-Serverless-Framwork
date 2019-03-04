@@ -36,3 +36,30 @@ class EventTable(Event):
                 'countOfLike' : 0
             }
         )
+    
+    def change(self, event=Event):
+        self.table.update_item(
+            Key = {
+                "eventId" : event.eventId
+            },
+            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k",
+            ExpressionAttributeNames = {
+                '#a' : "start",
+                '#b' : "end",
+                '#c' : "location",
+                '#d' : "status"
+            },
+            ExpressionAttributeValues = {
+                ':a' : event.urlData,
+                ':b' : event.start,
+                ':c' : event.end,
+                ':d' : event.university,
+                ':e' : event.eventName,
+                ':f' : event.price,
+                ':g' : event.location,
+                ':h' : event.qualification,
+                ':i' : event.detail,
+                ':j' : event.contact,
+                ':k' : event.status
+            }
+        )
