@@ -1,7 +1,7 @@
 class Event():
     def __init__(self, identityId, eventName, urlData, university, price, location, start, 
                     qualification, detail, contact, countOfLike=0, end=None, eventId=0, 
-                    status="0_false", isPrivate=False ,updateTime="",  favorite=[]):
+                    status="0_false", isPrivate=False ,updateTime=0,  favorite=[]):
         self.contact = contact
         self.countOfLike = countOfLike
         self.detail = detail
@@ -25,3 +25,9 @@ class Event():
             self.status = "0_true"
         else:
             self.status = "0_false"
+    
+    def createIsPrivateFromStatus(self):
+        if(self.status == "0_false"):
+            self.isPrivate = False
+        else:
+            self.isPrivate = True
