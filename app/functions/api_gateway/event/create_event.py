@@ -9,7 +9,7 @@ from app.util.return_dict import Successed, Failured
 ''' パラメーター
 {
     "identityId": "amachi1",
-    "eventName": "テスト2",
+    "eventName": "イベント名",
     "urlData": "https://nangngnainil34982379gsesssgg",
     "university": "立命館大学",
     "price": "500円",
@@ -17,7 +17,7 @@ from app.util.return_dict import Successed, Failured
     "start": 1526000000,
     "end": 1528000000,
     "qualification": "初心者でもOK!",
-    "detail": "みんなでhtmlとcssの基本を勉強しよう",
+    "detail": "テスト",
     "contact": "amachi@gmail.com",
     "isPrivate": false
 }
@@ -30,7 +30,6 @@ def create_event(event, context):
         identityId = param['identityId']
 
         mEvent = Event(**param)
-        mEvent.createStatusFromIsPrivate()
 
         sequenceTable = SequenceTable(event)
         nextseq = sequenceTable.next_seq()
@@ -43,10 +42,10 @@ def create_event(event, context):
         eventTable.insert(mEvent)
 
         profileTable = ProfileTable(event)
-        item = profileTable.getFromIdentityId(identityId, "myEvent")
+        profile = profileTable.getFromIdentityId(identityId, "myEvent")
         listMyEvent = []
-        if("myEvent" in item):
-            listMyEvent = item['myEvent']
+        if profile.myEvent != []:
+            listMyEvent = profile.myEvent
         listMyEvent.append(mEvent.eventId)
 
         profileTable.changeMyEvent(identityId, listMyEvent)
