@@ -51,7 +51,7 @@ functions:
 
   post_event:
     handler: app/functions/api_gateway/event/create_event.create_event
-    timeout: 3
+    timeout: 10
     events: ${file(./config/events.yml):post_event}
 
   put_event:
