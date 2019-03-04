@@ -24,12 +24,18 @@ class Profile:
         else:
             return False
     
-    def createNameFromEmail(self):
-        emailSplit = self.email.rsplit("@")
-        self.name = emailSplit[0]
-    
     def hasUrlData(self):
         if self.urlData:
             return True
         else:
             return False
+    
+    def hasMyEvent(self):
+        if self.name:
+            return True
+        else:
+            return False
+    
+    def createNameFromEmail(self):
+        emailSplit = self.email.rsplit("@")
+        self.name = emailSplit[0]
