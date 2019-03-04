@@ -1,6 +1,4 @@
-import os
 import json
-import boto3
 import time
 from app.data.event import Event
 from app.data.source.sequence_table import SequenceTable
@@ -53,9 +51,7 @@ def create_event(event, context):
 
         profileTable.changeMyEvent(identityId, listMyEvent)
         
-        res = {
-            "eventId" : mEvent.eventId
-        }
+        res = { "eventId" : mEvent.eventId }
         return Successed(res)
     
     except:
