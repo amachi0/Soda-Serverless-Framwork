@@ -2,7 +2,7 @@ import json
 import boto3
 import os
 from app.util.return_dict import *
-from app.util.decimalencoder import DecimalEncoder
+from app.util.change_none_and_emptystr import NoneToEmptystrInDict
 from app.data.profile import Profile
 from app.data.source.profile_table import ProfileTable
 
@@ -11,7 +11,6 @@ def get_profile(event, context):
         sodaId = event['queryStringParameters']['sodaId']
         profileTable = ProfileTable(event)
         profile = profileTable.getProfileFromSodaId(sodaId)
-        profile.noneToEmptystr()
         res = {
             "name" : profile.name,
             "urlData" : profile.urlData,
@@ -24,6 +23,9 @@ def get_profile(event, context):
             "templates" : profile.templates
         }
         print(res)
+
+        NoneToEmptystrInDict(res)
+
         return Successed(res)
     
     except:

@@ -14,7 +14,7 @@ from app.data.source.profile_table import ProfileTable
     "urlData": "test",
     "name": "test",
     "universities": [
-      "立命館"
+      "立命館大学"
     ]
   }
 }
@@ -28,7 +28,8 @@ def create_user(event, context):
     if not profile.hasName():
       profile.createNameFromEmail()
     
-    profile.emptystrToNone()
+    if not profile.hasUrlData():
+      profile.urlData = None
     
     profileTable = ProfileTable(event)
     profileTable.insertProfile(profile)

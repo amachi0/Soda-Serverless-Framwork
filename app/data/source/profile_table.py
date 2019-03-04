@@ -11,7 +11,7 @@ class ProfileTable(Profile):
 
         if 'isOffline' in event and event['isOffline']:
             dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
-            tableName = "local-profile"
+            tableName = "dev-profile"
         
         self.table = dynamodb.Table(tableName)
         self.sodaIdIndex = os.environ['PROFILE_SODA_ID_INDEX']
