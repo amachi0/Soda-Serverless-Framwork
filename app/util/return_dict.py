@@ -1,4 +1,5 @@
 import json
+from app.util.decimalencoder import DecimalEncoder
 
 def Successed(body):
     return {
@@ -7,7 +8,7 @@ def Successed(body):
                 'content-type' : 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            'body' : json.dumps(body)
+            'body' : json.dumps(body, cls=DecimalEncoder)
         }
 
 def Failured():
