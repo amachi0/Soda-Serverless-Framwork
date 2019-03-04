@@ -16,7 +16,7 @@ class ProfileTable(Profile):
         self.table = dynamodb.Table(tableName)
         self.sodaIdIndex = os.environ['PROFILE_SODA_ID_INDEX']
     
-    def insertProfile(self, profile=Profile):
+    def insert(self, profile=Profile):
         self.table.put_item(
             Item = {
                 "identityId" : profile.identityId,
@@ -36,7 +36,7 @@ class ProfileTable(Profile):
             }
         )
     
-    def changeProfile(self, profile=Profile):
+    def change(self, profile=Profile):
         self.table.update_item(
             Key = {
                 "identityId" : profile.identityId
@@ -57,7 +57,18 @@ class ProfileTable(Profile):
             }
         )
     
-    def getProfileFromSodaId(self, sodaId):
+    def changeMyEvent(self, identityId, listMyEvent):
+        self.table.update_item(
+            Key = {
+                "identityId" : identityId
+            },
+            UpdateExpression = "set myEvent=:x",
+            ExpressionAttributeValues = {
+                ':x' : listMyEvent
+            }
+        )
+    
+    def getFromSodaId(self, sodaId):
         itemList = self.table.query(
             IndexName = self.sodaIdIndex,
             KeyConditionExpression = Key('sodaId').eq(sodaId)
@@ -65,3 +76,12 @@ class ProfileTable(Profile):
         item = itemList['Items'][0]
         profile = Profile(**item)
         return profile
+    
+    def getFromIdentityId(self, identityId, projectionExpression=None):
+        itemProfile = self.table.get_item(
+            Key = {
+                "identityId" : identityId
+            },
+            ProjectionExpression = projectionExpression
+        )
+        return itemProfile["Item"]
