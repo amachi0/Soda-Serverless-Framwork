@@ -1,6 +1,4 @@
 import json
-import boto3
-import os
 from app.util.return_dict import Successed, Failured
 from app.data.profile import Profile
 from app.data.source.profile_table import ProfileTable
