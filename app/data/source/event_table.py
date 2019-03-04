@@ -15,6 +15,7 @@ class EventTable(Event):
         self.table = dynamodb.Table(tableName)
     
     def insert(self, event=Event):
+        event.createStatusFromIsPrivate()
         self.table.put_item(
             Item = {
                 'identityId' : event.identityId,
@@ -38,6 +39,7 @@ class EventTable(Event):
         )
     
     def change(self, event=Event):
+        event.createStatusFromIsPrivate
         self.table.update_item(
             Key = {
                 "eventId" : event.eventId
@@ -63,3 +65,21 @@ class EventTable(Event):
                 ':k' : event.status
             }
         )
+    
+    def getDetail(self, eventId):
+        item = self.table.get_item(
+            Key = {
+                'eventId' : eventId
+            },
+            ExpressionAttributeNames = {
+                    '#a' : "end",
+                    '#b' : 'location',
+                    '#c' : 'start',
+                    '#d' : 'status'
+                },
+            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d"
+        )
+        item = item['Item']
+        event = Event(**item)
+        event.createIsPrivateFromStatus()
+        return event
