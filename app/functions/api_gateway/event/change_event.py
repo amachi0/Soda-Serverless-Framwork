@@ -27,7 +27,6 @@ def change_event(event, context):
         eventId = param['eventId']
 
         mEvent = Event(**param)
-        mEvent.createStatusFromIsPrivate()
 
         eventTable = EventTable(event)
         eventTable.change(mEvent)
