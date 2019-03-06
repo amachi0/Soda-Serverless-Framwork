@@ -16,8 +16,7 @@ def get_profile(event, context):
             "facebook" : profile.facebook,
             "instagram" : profile.instagram,
             "isAcceptMail" : profile.isAcceptMail,
-            "universities" : profile.universities,
-            "templates" : profile.templates
+            "universities" : profile.universities
         }
         print(res)
 

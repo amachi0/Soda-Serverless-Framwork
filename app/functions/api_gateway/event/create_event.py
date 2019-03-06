@@ -41,14 +41,10 @@ def create_event(event, context):
         eventTable = EventTable(event)
         eventTable.insert(mEvent)
 
+        #作成したイベントのeventIdをプロフィールテーブルのmyEventに追加
+        addList = [mEvent.eventId]
         profileTable = ProfileTable(event)
-        profile = profileTable.getFromIdentityId(identityId, "myEvent")
-        listMyEvent = []
-        if profile.myEvent != []:
-            listMyEvent = profile.myEvent
-        listMyEvent.append(mEvent.eventId)
-
-        profileTable.changeMyEvent(identityId, listMyEvent)
+        profileTable.addListItemInProfileTable(identityId, "myEvent", addList)
         
         res = { "eventId" : mEvent.eventId }
         return Successed(res)

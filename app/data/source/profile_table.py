@@ -15,7 +15,7 @@ class ProfileTable(Profile):
         
         self.table = dynamodb.Table(tableName)
         self.sodaIdIndex = os.environ['PROFILE_SODA_ID_INDEX']
-    
+
     def insert(self, profile=Profile):
         self.table.put_item(
             Item = {
@@ -29,9 +29,7 @@ class ProfileTable(Profile):
                 "twitter" : profile.twitter,
                 "facebook" : profile.facebook,
                 "instagram" : profile.instagram,
-                "favoriteEvent" : profile.favoriteEvent,
-                "myEvent" : profile.myEvent,
-                "templates" : profile.templates,
+                #"templates" : profile.templates,
                 "isAcceptMail" : profile.isAcceptMail,
             }
         )
@@ -57,14 +55,32 @@ class ProfileTable(Profile):
             }
         )
     
-    def changeMyEvent(self, identityId, listMyEvent):
+    def addListItemInProfileTable(self, identityId, setName, listItem):
         self.table.update_item(
             Key = {
                 "identityId" : identityId
             },
-            UpdateExpression = "set myEvent=:x",
+            #UpdateExpression = "SET #attribute = list_append(#attribute, :x)",
+            UpdateExpression = "ADD #attribute :x",
+            ExpressionAttributeNames= {
+                '#attribute': setName
+            },
             ExpressionAttributeValues = {
-                ':x' : listMyEvent
+                ':x' : set(listItem)
+            }
+        )
+    
+    def deleteListItemInProfileTable(self, identityId, setName, listItem):
+        self.table.update_item(
+            Key = {
+                "identityId" : identityId
+            },
+            UpdateExpression = "DELETE #attribute :x",
+            ExpressionAttributeNames= {
+                '#attribute': setName
+            },
+            ExpressionAttributeValues = {
+                ':x' : set(listItem)
             }
         )
     

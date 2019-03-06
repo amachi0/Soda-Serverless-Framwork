@@ -2,6 +2,9 @@ import json
 import boto3
 import traceback
 import os
+from app.data.source.event_table import EventTable
+from app.data.source.profile_table import ProfileTable
+from app.util.return_dict import Successed, Failured
 
 dynamodb = boto3.resource('dynamodb')
 sns = boto3.resource('sns')
@@ -15,28 +18,26 @@ def delete_event(event, context):
         param = json.loads(event["body"])
         eventId = param['eventId']
         identityId = param['identityId']
-        eventTable = dynamodb.Table(event_table_name)
-        itemEvent = eventTable.get_item(
-            Key = {
-                "eventId" : eventId
-            }
-        )
-        if (identityId != itemEvent['Item']['identityId']):
-            res = {
-                "result" : 0
-            }
-            return {
-                'statusCode' : 200,
-                'headers' : {
-                    'content-type' : 'application/json',
-                    'Access-Control-Allow-Origin': '*'
-                },
-                'body' : json.dumps(res)
-            }
+
+        eventTable = EventTable(event)
+        mEvent = eventTable.getDetail(eventId)
+
+        if identityId != mEvent.identityId:
+            return Failured()
+
+        eventTable.delete(mEvent.eventId)
+        
+        listItem = [mEvent.eventId]
+
+        profileTable = ProfileTable(event)
+        profileTable.deleteListItemInProfileTable(mEvent.identityId, "myEvent", listItem)
+
+        ''' キャンセルされたらいいねをしていた人にお知らせを送る
         message = {
-            'eventId' : int(itemEvent['Item']['eventId']),
-            'title' : itemEvent['Item']['eventName']
+            'eventId' : int(event.eventId),
+            'title' : event.eventName
         }
+
         if("favorite" in itemEvent['Item']):
             list = itemEvent['Item']['favorite']
             message['list'] = list
@@ -44,55 +45,12 @@ def delete_event(event, context):
             topic.publish(
                 Message = messageJson
             )
+        '''
 
-        eventTable.delete_item(
-            Key = {
-                'eventId' : eventId
-            }
-        )
-        
-        profileTable = dynamodb.Table(profile_table_name)
-        item_profile = profileTable.get_item(
-            Key = {
-                'identityId' : identityId
-            }
-        )
-        myEvent = item_profile['Item']['myEvent']
-        myEvent.remove(eventId)
-        
-        profileTable.update_item(
-            Key = {
-                'identityId' : identityId
-            },
-            UpdateExpression = "set myEvent=:x",
-            ExpressionAttributeValues = {
-                ':x' : myEvent
-            }
-        )
-        
-        res = {
-            "result" : 1
-        }
-        return {
-            'statusCode' : 200,
-            'headers' : {
-                'content-type' : 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'body' : json.dumps(res)
-        }
+        res = { "result" : 1 }
+        return Successed(res)
     
     except:
         import traceback
         traceback.print_exc()
-        res_error = {
-            "result" : 0
-        }
-        return {
-            'statusCode' : 500,
-            'headers' : {
-                'content-type' : 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'body' : json.dumps(res_error)
-        }
+        return Failured()
