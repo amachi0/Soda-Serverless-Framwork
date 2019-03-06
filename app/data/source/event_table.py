@@ -83,3 +83,10 @@ class EventTable(Event):
         event = Event(**item)
         event.createIsPrivateFromStatus()
         return event
+    
+    def delete(self, eventId):
+        self.table.delete_item(
+            Key = {
+                'eventId' : eventId
+            }
+        )
