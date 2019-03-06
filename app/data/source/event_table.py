@@ -66,7 +66,7 @@ class EventTable(Event):
             }
         )
     
-    def getDetail(self, eventId):
+    def getForEventDetail(self, eventId):
         item = self.table.get_item(
             Key = {
                 'eventId' : eventId
@@ -82,6 +82,17 @@ class EventTable(Event):
         item = item['Item']
         event = Event(**item)
         event.createIsPrivateFromStatus()
+        return event
+    
+    def getFromEventId(self, eventId, projectionExpression=None):
+        item = self.table.get_item(
+            Key = {
+                'eventId' : eventId
+            },
+            ProjectionExpression = projectionExpression
+        )
+        item = item['Item']
+        event = Event(**item)
         return event
     
     def delete(self, eventId):
