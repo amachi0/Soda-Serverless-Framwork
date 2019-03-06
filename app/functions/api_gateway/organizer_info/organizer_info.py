@@ -1,83 +1,39 @@
-import json
-import boto3
-from app.util.decimalencoder import DecimalEncoder
-import os
-
-dynamodb = boto3.resource('dynamodb')
-eventTableName = os.environ['EVENT_TABLE']
-profileTableName = os.environ['PROFILE_TABLE']
-
-def get_item_in_dict(field, dic):
-    if(field in dic):
-        info = dic[field]
-        if(info == None):
-            info = ""
-
-    else:
-        info = ""
-        
-    return info
+from app.data.source.event_table import EventTable
+from app.data.source.profile_table import ProfileTable
+from app.util.return_dict import Successed, Failured
+from app.util.change_none_and_emptystr import NoneToEmptystrInDict
 
 def organizer_info(event, context):
     try:
-        eventId = event['queryStringParameters']['eventId']
-        eventTable = dynamodb.Table(eventTableName)
-        content = eventTable.get_item(
-            Key = {
-                "eventId" : int(eventId)
-            }
-        )
+        eventId = int(event['queryStringParameters']['eventId'])
+
+        eventTable = EventTable(event)
+        mEvent = eventTable.getFromEventId(eventId, 'identityId')
+        identityId = mEvent.identityId
         
-        identityId = content['Item']['identityId']
+        profileTable = ProfileTable(event)
+        organizer = profileTable.getFromIdentityId(identityId, 'sodaId, #name, urlData, profile, twitter, facebook, instagram')
         
-        profileTable = dynamodb.Table(profileTableName)
-        organizer = profileTable.get_item(
-            Key = {
-                "identityId" : identityId
-            }
-        )
-        
-        item = organizer['Item']
-        sodaId = item['sodaId']
-        name = get_item_in_dict('name', item)
-        urlData = get_item_in_dict('urlData', item)
-        profile = get_item_in_dict('profile', item)
-        twitter = get_item_in_dict('twitter', item)
-        facebook = get_item_in_dict('facebook', item)
-        instagram = get_item_in_dict('instagram', item)
-        
+        info = {  
+            "sodaId" : organizer.sodaId,
+            "name" : organizer.name,
+            "urlData" : organizer.urlData,
+            "profile" : organizer.profile,
+            "twitter" : organizer.twitter,
+            "facebook" : organizer.facebook,
+            "instagram" : organizer.instagram
+        }
+
+        NoneToEmptystrInDict(info)
+
         res = {
-            "organizer" : {
-                "sodaId" : sodaId,
-                "name" : name,
-                "urlData" : urlData,
-                "profile" : profile,
-                "twitter" : twitter,
-                "facebook" : facebook,
-                "instagram" : instagram
-            }
+            'organizer' : info
         }
+
         
-        return {
-            'statusCode' : 200,
-            'headers' : {
-                'content-type' : 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            "body": json.dumps(res, cls = DecimalEncoder)
-        }
-        
+        return Successed(res)
+
     except:
         import traceback
         traceback.print_exc()
-        res_error = {
-            'result' : 0
-        }
-        return {
-            'statusCode' : 500,
-            'headers' : {
-                'content-type' : 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            "body": json.dumps(res_error)
-        }
+        return Failured()
