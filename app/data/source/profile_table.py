@@ -15,6 +15,8 @@ class ProfileTable(Profile):
         
         self.table = dynamodb.Table(tableName)
         self.sodaIdIndex = os.environ['PROFILE_SODA_ID_INDEX']
+        self.checkEmailIndex = os.environ['PROFILE_CHECK_Email_INDEX']
+        self.checkSodaIdIndex = os.environ['PROFILE_CHECK_SODA_ID_INDEX']
 
     def insert(self, profile=Profile):
         self.table.put_item(
@@ -106,3 +108,23 @@ class ProfileTable(Profile):
         param = item['Item']
         profile = Profile(**param)
         return profile
+    
+    def isValidEmail(self, email):
+        itemList = self.table.query(
+			IndexName = self.checkEmailIndex,
+			KeyConditionExpression = Key('email').eq(email)
+		)
+        if (itemList['Count'] == 0):
+            return True
+        else:
+            return False
+    
+    def isValidSodaId(self, sodaId):
+        itemList = self.table.query(
+            IndexName = self.checkSodaIdIndex,
+            KeyConditionExpression = Key('sodaId').eq(sodaId)
+        )
+        if (itemList['Count'] == 0):
+            return True
+        else:
+            return False
