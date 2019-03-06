@@ -31,9 +31,9 @@ class ProfileTable(Profile):
                 "twitter" : profile.twitter,
                 "facebook" : profile.facebook,
                 "instagram" : profile.instagram,
-                #"templates" : profile.templates,
-                "isAcceptMail" : profile.isAcceptMail,
-            }
+                "isAcceptMail" : profile.isAcceptMail
+            },
+            ConditionExpression = "attribute_not_exists(identityId)"
         )
     
     def change(self, profile=Profile):
@@ -62,7 +62,6 @@ class ProfileTable(Profile):
             Key = {
                 "identityId" : identityId
             },
-            #UpdateExpression = "SET #attribute = list_append(#attribute, :x)",
             UpdateExpression = "ADD #attribute :x",
             ExpressionAttributeNames= {
                 '#attribute': setName
