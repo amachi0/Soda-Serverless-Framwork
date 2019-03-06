@@ -5,16 +5,14 @@ from app.data.source.profile_table import ProfileTable
 
 ''' パラメーター
 {
-  "body": {
-    "identityId": "amachi1",
-    "sodaId": "amachi1",
-    "email": "shunsuke-1103@ezweb.ne.jp",
-    "urlData": "test",
-    "name": "test",
-    "universities": [
-      "立命館大学"
-    ]
-  }
+  "identityId": "amachi1",
+  "sodaId": "amachi1",
+  "email": "shunsuke-1103@ezweb.ne.jp",
+  "urlData": "test",
+  "name": "test",
+  "universities": [
+    "立命館大学"
+  ]
 }
 '''
 
