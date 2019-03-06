@@ -6,13 +6,15 @@ from app.data.event import Event
 class EventTable(Event):
     def __init__(self, event):
         dynamodb = boto3.resource('dynamodb')
-        tableName = os.environ['EVENT_TABLE']
+        self.client = boto3.client('dynamodb')
+        self.tableName = os.environ['EVENT_TABLE']
 
         if 'isOffline' in event and event['isOffline']:
             dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
-            tableName = "dev-event"
+            self.client = boto3.client('dynamodb', endpoint_url='http://localhost:8000')
+            self.tableName = "dev-event"
         
-        self.table = dynamodb.Table(tableName)
+        self.table = dynamodb.Table(self.tableName)
     
     def insert(self, event=Event):
         event.createStatusFromIsPrivate()
@@ -123,6 +125,46 @@ class EventTable(Event):
         item = item['Item']
         event = Event(**item)
         return event
+    
+    def batchGetFromListEventId(self, listEventId):
+        listKeys = []
+        for eventId in listEventId:
+            dic = {
+                "eventId" : {
+                    "N" : str(eventId)
+                }
+            }
+            listKeys.append(dic)
+        res = self.client.batch_get_item(
+            RequestItems = {
+                self.tableName : {
+                    'Keys' : listKeys,
+                    'ExpressionAttributeNames' : {
+                        '#e' : "end",
+                        '#l' : 'location',
+                        '#s' : 'start'
+                    },
+                    'ProjectionExpression' : 'eventId, eventName, updateTime, #s, #e, #l, urlData, university, countOfLike'
+                }
+            }
+        )
+        events = []
+        for event in res['Responses'][self.tableName]:
+            myEvent = Event()
+            myEvent.eventId = int(event['eventId']['N'])
+            myEvent.eventName = event['eventName']['S']
+            myEvent.updateTime = int(event['updateTime']['N'])
+            myEvent.start = int(event['start']['N'])
+            if('N' in event['end']):
+                myEvent.end = int(event['end']['N'])
+            else:
+                myEvent.end = None
+            myEvent.location = event['location']['S']
+            myEvent.urlData = event['urlData']['S']
+            myEvent.university = event['university']['S']
+            myEvent.countOfLike = int(event['countOfLike']['N'])
+            events.append(myEvent)
+        return events
     
     def delete(self, eventId):
         self.table.delete_item(
