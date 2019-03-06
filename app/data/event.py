@@ -21,6 +21,9 @@ class Event():
         self.updateTime = updateTime
         self.urlData = urlData
     
+    def __lt__(self, other):
+        return self.eventId > other.eventId
+    
     def createStatusFromIsPrivate(self):
         if self.isPrivate == True:
             self.status = "0_true"
