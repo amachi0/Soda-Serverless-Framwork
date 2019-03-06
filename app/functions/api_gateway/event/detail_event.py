@@ -16,7 +16,7 @@ def detail_event(event, context):
             listFavorite = profile.favoriteEvent
             
         eventTable = EventTable(event)
-        event = eventTable.getDetail(eventId)
+        event = eventTable.getForEventDetail(eventId)
 
         isFavorite = False
         if(event.eventId in listFavorite):
