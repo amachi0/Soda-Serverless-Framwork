@@ -98,6 +98,9 @@ class ProfileTable(Profile):
             Key = {
                 "identityId" : identityId
             },
+            ExpressionAttributeNames = {
+                '#name' : "name"
+            },
             ProjectionExpression = projectionExpression
         )
         param = item['Item']
