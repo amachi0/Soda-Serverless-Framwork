@@ -30,12 +30,11 @@ class EventTable(Event):
                 'qualification' : event.qualification,
                 'detail' : event.detail,
                 'contact' : event.contact,
-                # 'entry' : param['entry'],
-                # 'sponsor' : param['sponsor'],
                 'status' : event.status,
                 'updateTime' : event.updateTime,
                 'countOfLike' : 0
-            }
+            },
+            ConditionExpression = "attribute_not_exists(eventId)"
         )
     
     def change(self, event=Event):
@@ -64,6 +63,36 @@ class EventTable(Event):
                 ':j' : event.contact,
                 ':k' : event.status
             }
+        )
+    
+    def addFavorite(self, eventId, listItem):
+        identityId = listItem[0]
+        self.table.update_item(
+            Key = {
+                "eventId" : eventId
+            },
+            UpdateExpression = "ADD favorite :x SET countOfLike = countOfLike + :val",
+            ExpressionAttributeValues = {
+                ':x' : set(listItem),
+                ':y' : identityId,
+                ':val' : 1
+            },
+            ConditionExpression = "NOT (contains(favorite, :y))"
+        )
+    
+    def removeFavorite(self, eventId, listItem):
+        identityId = listItem[0]
+        self.table.update_item(
+            Key = {
+                "eventId" : eventId
+            },
+            UpdateExpression = "DELETE favorite :x SET countOfLike = countOfLike - :val",
+            ExpressionAttributeValues = {
+                ':x' : set(listItem),
+                ':y' : identityId,
+                ':val' : 1
+            },
+            ConditionExpression = "contains(favorite, :y)"
         )
     
     def getForEventDetail(self, eventId):
