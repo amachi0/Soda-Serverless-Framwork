@@ -1,7 +1,7 @@
 class Profile:
     def __init__(self, identityId=None, sodaId=None, email=None, universities=[], name=None, 
                     urlData=None, profile=None, twitter=None, facebook=None, instagram=None, 
-                    favoriteEvent=[], myEvent=[], templates=[], isAcceptMail=True):
+                    favoriteEvent=set([]), myEvent=set([]), templates=[], isAcceptMail=True):
         
         self.identityId = identityId
         self.sodaId = sodaId
