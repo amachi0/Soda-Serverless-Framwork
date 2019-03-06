@@ -30,7 +30,6 @@ def organizer_info(event, context):
             'organizer' : info
         }
 
-        
         return Successed(res)
 
     except:
