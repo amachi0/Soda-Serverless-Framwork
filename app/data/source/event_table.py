@@ -142,6 +142,31 @@ class EventTable(Event):
         event = Event(**item)
         return event
     
+    def getFinishedEventIdList(self, unixTime):
+        itemsNotPrivate = self.table.query(
+            IndexName = self.statusStartIndex,
+            KeyConditionExpression = Key('status').eq('0_false') & Key('start').lt(unixTime),
+            FilterExpression = Attr('end').lt(unixTime) | Attr('end').attribute_type("NULL")
+        )
+
+        itemsPrivate = self.table.query(
+            IndexName = self.statusStartIndex,
+            KeyConditionExpression = Key('status').eq('0_true') & Key('start').lt(unixTime),
+            FilterExpression = Attr('end').lt(unixTime) | Attr('end').attribute_type("NULL")
+        )
+
+        eventIdList = []
+        if itemsNotPrivate["Count"] == 0 and itemsPrivate["Count"] == 0:
+            return eventIdList
+
+        for event in itemsNotPrivate['Items']:
+            eventIdList.append(event['eventId'])
+        
+        for event in itemsPrivate['Items']:
+            eventIdList.append(event['eventId'])
+
+        return eventIdList
+    
     def batchGetFromListEventId(self, listEventId):
         listKeys = []
         for eventId in listEventId:
