@@ -15,6 +15,7 @@ class EventTable(Event):
             self.tableName = "dev-event"
         
         self.table = dynamodb.Table(self.tableName)
+        self.statusStartIndex = os.environ['EVENT_STATUS_START_INDEX']
     
     def insert(self, event=Event):
         event.createStatusFromIsPrivate()
