@@ -34,3 +34,6 @@ MAIL_ADRESS_FROM_SODA: Soda <info@sodaevent.com>
 
 #お問い合わせからのメールを受け取る際のアドレス
 MAIL_ADRESS_CONTACT: shunsuke.kmkz0617@gmail.com
+
+#SlackのWebhook URL
+SLACK_WEB_HOOK_URL: https://hooks.slack.com/services/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
