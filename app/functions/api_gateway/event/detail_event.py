@@ -43,6 +43,5 @@ def detail_event(event, context):
         return Successed(res)
     
     except:
-        import traceback
-        traceback.print_exc()
-        Failured()
+        import  traceback
+        return Failured(traceback.format_exc())

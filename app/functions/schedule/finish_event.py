@@ -32,6 +32,5 @@ def finish_event(event, context):
         return Successed({ "result" : 1 })
 
     except:
-        import traceback
-        traceback.print_exc()
-        return Failured()
+        import  traceback
+        return Failured(traceback.format_exc())

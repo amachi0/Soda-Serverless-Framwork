@@ -1,5 +1,6 @@
 import json
 import os
+import  traceback
 from app.data.source.event_table import EventTable
 from app.data.source.profile_table import ProfileTable
 from app.util.return_dict import Successed, Failured
@@ -20,7 +21,7 @@ def delete_event(event, context):
         mEvent = eventTable.getFromEventId(eventId, "identityId")
 
         if identityId != mEvent.identityId:
-            return Failured()
+            return Failured(traceback.format_exc())
 
         eventTable.delete(eventId)
         
@@ -48,6 +49,4 @@ def delete_event(event, context):
         return Successed(res)
     
     except:
-        import traceback
-        traceback.print_exc()
-        return Failured()
+        return Failured(traceback.format_exc())

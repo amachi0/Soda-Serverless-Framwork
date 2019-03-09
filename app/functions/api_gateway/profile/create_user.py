@@ -37,5 +37,4 @@ def create_user(event, context):
         
   except:
     import  traceback
-    traceback.print_exc()
-    return Failured
+    return Failured(traceback.format_exc())

@@ -36,5 +36,4 @@ def change_event(event, context):
     
     except:
         import  traceback
-        traceback.print_exc()
-        Failured()
+        return Failured(traceback.format_exc())
