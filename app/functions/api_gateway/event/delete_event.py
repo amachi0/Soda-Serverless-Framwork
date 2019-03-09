@@ -4,12 +4,11 @@ from app.data.source.event_table import EventTable
 from app.data.source.profile_table import ProfileTable
 from app.util.return_dict import Successed, Failured
 
-dynamodb = boto3.resource('dynamodb')
+'''
 sns = boto3.resource('sns')
 topic_name = os.environ['SNS_CANCEL_TOPIC']
 topic = sns.Topic(topic_name)
-event_table_name = os.environ['EVENT_TABLE']
-profile_table_name = os.environ['PROFILE_TABLE']
+'''
 
 def delete_event(event, context):
     try:
