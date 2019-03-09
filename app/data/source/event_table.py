@@ -98,6 +98,21 @@ class EventTable(Event):
             ConditionExpression = "contains(favorite, :y)"
         )
     
+    def updateStatuses(self, listEventId):
+        for eventId in listEventId:
+            self.table.update_item(
+                Key = {
+                    'eventId' : eventId
+                },
+                UpdateExpression = "set #name=:x",
+                ExpressionAttributeNames = {
+                    '#name' : "status"
+                },
+                ExpressionAttributeValues = {
+                    ':x' : "1"
+                }
+            )
+    
     def getForEventDetail(self, eventId):
         item = self.table.get_item(
             Key = {
