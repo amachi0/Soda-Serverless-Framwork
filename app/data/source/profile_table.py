@@ -68,7 +68,8 @@ class ProfileTable(Profile):
             },
             ExpressionAttributeValues = {
                 ':x' : set(listItem)
-            }
+            },
+            ConditionExpression = Attr('identityId').eq(identityId)
         )
     
     def deleteListItemInProfileTable(self, identityId, setName, listItem):
