@@ -40,7 +40,7 @@ class EventTable(Event):
         )
     
     def change(self, event=Event):
-        event.createStatusFromIsPrivate
+        event.createStatusFromIsPrivate()
         self.table.update_item(
             Key = {
                 "eventId" : event.eventId
