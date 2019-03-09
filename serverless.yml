@@ -28,6 +28,10 @@ custom:
     dev: dev-sequence
     prod: sequence
   
+  imageBucket:
+    dev: soda-test-image
+    prod: soda-image
+  
   serverless-offline: 
     port: 4000
   
