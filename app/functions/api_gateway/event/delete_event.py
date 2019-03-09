@@ -1,6 +1,4 @@
 import json
-import boto3
-import traceback
 import os
 from app.data.source.event_table import EventTable
 from app.data.source.profile_table import ProfileTable
