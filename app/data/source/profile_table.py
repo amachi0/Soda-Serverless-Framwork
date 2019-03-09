@@ -94,14 +94,25 @@ class ProfileTable(Profile):
         item = itemList['Items'][0]
         profile = Profile(**item)
         return profile
-    
-    def getFromIdentityId(self, identityId, projectionExpression=None):
+
+    def getOrganizerInfo(self, identityId):
         item = self.table.get_item(
             Key = {
                 "identityId" : identityId
             },
-            ExpressionAttributeNames = {
-                '#name' : "name"
+            ProjectionExpression = 'sodaId, #attributeName, urlData, profile, twitter, facebook, instagram',
+            ExpressionAttributeNames= {
+                '#attributeName': 'name'
+            }
+        )
+        param = item['Item']
+        profile = Profile(**param)
+        return profile
+
+    def getFromIdentityId(self, identityId, projectionExpression=None):
+        item = self.table.get_item(
+            Key = {
+                "identityId" : identityId
             },
             ProjectionExpression = projectionExpression
         )
