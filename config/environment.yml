@@ -18,7 +18,7 @@ EVENT_STATUS_UPDATETIME_INDEX: status-updateTime-index
 
 #S3のバケット名
 S3_JSON_BUCKET: soda-json
-S3_IMAGE_BUCKET: soda-test-image
+S3_IMAGE_BUCKET: ${self:custom.imageBucket.${self:provider.stage}}
 
 #S3のファイル名
 FAQS_JSON: faqs.json
