@@ -3,8 +3,10 @@ from app.data.event import Event
 def createResponseFromEvents(events, startNum,favoriteEvents):
     res = {}
     for event in events:
-        if(event.eventId in favoriteEvents):
-                isFavorite = True
+        if favoriteEvents == "ALL":
+            isFavorite = True
+        elif(event.eventId in favoriteEvents):
+            isFavorite = True
         else:
             isFavorite = False
 
