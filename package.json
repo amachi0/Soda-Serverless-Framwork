@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/amachi0/aws_soda_test#readme",
   "dependencies": {
-    "aws-sdk": "^2.413.0"
+    "aws-sdk": "^2.413.0",
+    "serverless-python-requirements": "^4.3.0"
   },
   "devDependencies": {
     "serverless-dynamodb-local": "^0.2.35",
