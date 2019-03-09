@@ -21,63 +21,9 @@ def finish_event(event, context):
     try:
         now = time.time()
         nowDecimal = decimal.Decimal(str(now))
-        #0で始まるイベントでクエリしたい
-        items = eventTable.query(
-            IndexName = statusStartIndex,
-            KeyConditionExpression = Key('status').eq("0_false") & Key('start').lt(nowDecimal)
-        )
 
-        if(items['Count'] == 0):
-            res_error = {
-                "result" : 0
-            }
-            return {
-                'statusCode' : 200,
-                'headers' : {
-                    'content-type' : 'application/json'
-                },
-                'body' : json.dumps(res_error)
-            }
-            
-        for item in items['Items']:
-            #終了時刻が未来の場合ループを抜ける
-            if item['end'] != None:
-                if int(item['end']) >= now:
-                    continue
-            
-            #イベントテーブルのfinishを1に変更
-            eventTable.update_item(
-                Key = {
-                    'eventId' : item['eventId']
-                },
-                UpdateExpression = "set #name=:x",
-                ExpressionAttributeNames = {
-                    '#name' : "status"
-                },
-                ExpressionAttributeValues = {
-                    ':x' : "1"
-                }
 
-            )
         
-        res = {
-            "result" : 1
-        }
-        return {
-            "statusCode": 200,
-            "body": json.dumps(res)
-        }
-    
     except:
         import traceback
         traceback.print_exc()
-        res_error = {
-            "result" : 0
-        }
-        return {
-            'statusCode' : 500,
-            'headers' : {
-                'content-type' : 'application/json'
-            },
-            'body' : json.dumps(res_error)
-        }
