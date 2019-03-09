@@ -1,7 +1,8 @@
 from app.data.source.profile_table import ProfileTable
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
-from app.logic.logic_created_event import createResponseFromEvents
+from app.logic.create_response_from_events import createResponseFromEvents
+from app.logic.create_startnum_and_size import createStartNumAndSize
 
 def created_event(event, context):
     try:
@@ -20,12 +21,7 @@ def created_event(event, context):
         #新しい順番から表示させたいので配列を降順にソートする
         myEvents.reverse()
 
-        if(page == 0):
-            startNum = 0
-            size = 3
-        else:
-            startNum = 3 + (page -1) * 5
-            size = 5
+        startNum, size = createStartNumAndSize(page)
         
         # 配列長以上の要素を要求されたときはここで処理を終わる
         if(len(myEvents) <= startNum):
