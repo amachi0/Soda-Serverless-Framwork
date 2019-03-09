@@ -2,6 +2,8 @@ Resources:
   ProfileDynamoDbTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
+      BillingMode: PAY_PER_REQUEST
+      TableName: dev-profile
       AttributeDefinitions:
         -
           AttributeName: identityId
@@ -25,9 +27,6 @@ Resources:
               KeyType: HASH
           Projection:
             ProjectionType: KEYS_ONLY
-          ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
         -
           IndexName: check-email-index
           KeySchema:
@@ -36,9 +35,6 @@ Resources:
               KeyType: HASH
           Projection:
             ProjectionType: KEYS_ONLY
-          ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
         -
           IndexName: sodaId-index
           KeySchema:
@@ -47,10 +43,3 @@ Resources:
               KeyType: HASH
           Projection:
               ProjectionType: ALL
-          ProvisionedThroughput:
-              ReadCapacityUnits: 5
-              WriteCapacityUnits: 5
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
-      TableName: dev-profile

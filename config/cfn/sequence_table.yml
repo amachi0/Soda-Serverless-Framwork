@@ -2,16 +2,13 @@ Resources:
   SequenceDynamoDbTable:
     Type: 'AWS::DynamoDB::Table'
     Properties:
+      TableName: dev-sequence
+      BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         -
           AttributeName: tableName
           AttributeType: S
-        
       KeySchema:
         -
           AttributeName: tableName
           KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-      TableName: dev-sequence
