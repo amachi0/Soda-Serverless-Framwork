@@ -28,6 +28,9 @@ def finish_event(event, context):
         if len(listEventId) == 0:
             return Successed({ "result" : 1 })
         
+        eventTable.updateStatuses(listEventId)
+        return Successed({ "result" : 1 })
+
     except:
         import traceback
         traceback.print_exc()
