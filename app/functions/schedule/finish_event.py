@@ -5,6 +5,10 @@ from boto3.dynamodb.conditions import Key, Attr
 import decimal
 import os
 
+from app.data.source.event_table import EventTable
+from app.data.source.profile_table import ProfileTable
+from app.util.return_dict import Successed, Failured
+
 dynamodb = boto3.resource('dynamodb')
 profileTableName = os.environ['PROFILE_TABLE']
 profileTable = dynamodb.Table(profileTableName)
