@@ -34,3 +34,4 @@ def finish_event(event, context):
     except:
         import traceback
         traceback.print_exc()
+        return Failured()
