@@ -25,6 +25,8 @@ def finish_event(event, context):
         eventTable = EventTable(event)
         listEventId = eventTable.getFinishedEventIdList(nowDecimal)
 
+        if len(listEventId) == 0:
+            return Successed({ "result" : 1 })
         
     except:
         import traceback
