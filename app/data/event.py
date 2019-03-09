@@ -1,7 +1,7 @@
 class Event():
-    def __init__(self, identityId=None, eventName=None, urlData=None, university=[],
+    def __init__(self, identityId=None, eventName=None, urlData=None, university=None,
                 price=None, location=None, start=None, qualification=None, detail=None,
-                contact=None, countOfLike=0, end=None, eventId=0, status="0_false",
+                contact=None, countOfLike=0, end=None, eventId=0, status="",
                 isPrivate=False, updateTime=0,  favorite=[]):
         self.contact = contact
         self.countOfLike = countOfLike
