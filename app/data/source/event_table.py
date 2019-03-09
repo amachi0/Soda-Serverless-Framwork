@@ -15,6 +15,7 @@ class EventTable(Event):
             self.tableName = "dev-event"
         
         self.table = dynamodb.Table(self.tableName)
+        self.statusStartIndex = os.environ['EVENT_STATUS_START_INDEX']
     
     def insert(self, event=Event):
         event.createStatusFromIsPrivate()
@@ -97,6 +98,21 @@ class EventTable(Event):
             ConditionExpression = "contains(favorite, :y)"
         )
     
+    def updateStatuses(self, listEventId):
+        for eventId in listEventId:
+            self.table.update_item(
+                Key = {
+                    'eventId' : eventId
+                },
+                UpdateExpression = "set #name=:x",
+                ExpressionAttributeNames = {
+                    '#name' : "status"
+                },
+                ExpressionAttributeValues = {
+                    ':x' : "1"
+                }
+            )
+    
     def getForEventDetail(self, eventId):
         item = self.table.get_item(
             Key = {
@@ -125,6 +141,31 @@ class EventTable(Event):
         item = item['Item']
         event = Event(**item)
         return event
+    
+    def getFinishedEventIdList(self, unixTime):
+        itemsNotPrivate = self.table.query(
+            IndexName = self.statusStartIndex,
+            KeyConditionExpression = Key('status').eq('0_false') & Key('start').lt(unixTime),
+            FilterExpression = Attr('end').lt(unixTime) | Attr('end').attribute_type("NULL")
+        )
+
+        itemsPrivate = self.table.query(
+            IndexName = self.statusStartIndex,
+            KeyConditionExpression = Key('status').eq('0_true') & Key('start').lt(unixTime),
+            FilterExpression = Attr('end').lt(unixTime) | Attr('end').attribute_type("NULL")
+        )
+
+        eventIdList = []
+        if itemsNotPrivate["Count"] == 0 and itemsPrivate["Count"] == 0:
+            return eventIdList
+
+        for event in itemsNotPrivate['Items']:
+            eventIdList.append(event['eventId'])
+        
+        for event in itemsPrivate['Items']:
+            eventIdList.append(event['eventId'])
+
+        return eventIdList
     
     def batchGetFromListEventId(self, listEventId):
         listKeys = []
