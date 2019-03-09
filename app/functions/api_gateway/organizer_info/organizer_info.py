@@ -12,7 +12,7 @@ def organizer_info(event, context):
         identityId = mEvent.identityId
         
         profileTable = ProfileTable(event)
-        organizer = profileTable.getFromIdentityId(identityId, 'sodaId, #name, urlData, profile, twitter, facebook, instagram')
+        organizer = profileTable.getOrganizerInfo(identityId)
         
         info = {  
             "sodaId" : organizer.sodaId,
