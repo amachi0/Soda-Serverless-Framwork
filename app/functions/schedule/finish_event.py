@@ -22,6 +22,8 @@ def finish_event(event, context):
         now = time.time()
         nowDecimal = decimal.Decimal(str(now))
 
+        eventTable = EventTable(event)
+        listEventId = eventTable.getFinishedEventIdList(nowDecimal)
 
         
     except:
