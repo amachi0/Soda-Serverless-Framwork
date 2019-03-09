@@ -17,14 +17,14 @@ def delete_event(event, context):
         identityId = param['identityId']
 
         eventTable = EventTable(event)
-        mEvent = eventTable.getDetail(eventId)
+        mEvent = eventTable.getFromEventId(eventId, "identityId")
 
         if identityId != mEvent.identityId:
             return Failured()
 
-        eventTable.delete(mEvent.eventId)
+        eventTable.delete(eventId)
         
-        listItem = [mEvent.eventId]
+        listItem = [eventId]
 
         profileTable = ProfileTable(event)
         profileTable.deleteListItemInProfileTable(mEvent.identityId, "myEvent", listItem)
