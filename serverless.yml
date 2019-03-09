@@ -13,6 +13,8 @@ provider:
 plugins:
   - serverless-dynamodb-local
   - serverless-offline
+  - serverless-python-requirements
+
 custom:
   defaultStage: dev
   
@@ -36,6 +38,9 @@ custom:
     port: 4000
   
   dynamodb:  ${file(./config/plugins/dynamodb-local.yml)}
+
+  pythonRequirements:
+    dockerizePip: true
 
 package:
   exclude:
