@@ -128,7 +128,7 @@ class EventTable(Event):
                     '#c' : 'start',
                     '#d' : 'status'
                 },
-            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d"
+            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d, sponser, entry"
         )
         item = item['Item']
         event = Event(**item)
