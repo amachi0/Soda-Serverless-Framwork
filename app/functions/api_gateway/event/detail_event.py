@@ -2,6 +2,7 @@ from app.data.profile import Profile
 from app.data.source.profile_table import ProfileTable
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
+from app.util.change_none_and_emptystr import NoneToEmptystrInDict
 
 def detail_event(event, context):
     try:
@@ -37,8 +38,12 @@ def detail_event(event, context):
             "price": event.price,
             "start": event.start,
             "isPrivate": event.isPrivate,
+            "sponser" : event.sponser,
+            "entry" : event.entry,
             "isFavorite": isFavorite
         }
+
+        NoneToEmptystrInDict(res)
 
         return Successed(res)
     

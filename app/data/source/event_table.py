@@ -35,6 +35,8 @@ class EventTable(Event):
                 'contact' : event.contact,
                 'status' : event.status,
                 'updateTime' : event.updateTime,
+                'sponser' : event.sponser,
+                'entry' : event.entry,
                 'countOfLike' : 0
             },
             ConditionExpression = "attribute_not_exists(eventId)"
@@ -46,7 +48,7 @@ class EventTable(Event):
             Key = {
                 "eventId" : event.eventId
             },
-            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k",
+            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k, sponser=:l, entry=:m",
             ExpressionAttributeNames = {
                 '#a' : "start",
                 '#b' : "end",
@@ -64,7 +66,9 @@ class EventTable(Event):
                 ':h' : event.qualification,
                 ':i' : event.detail,
                 ':j' : event.contact,
-                ':k' : event.status
+                ':k' : event.status,
+                ':l' : event.sponser,
+                ':m' : event.entry
             }
         )
     
@@ -124,7 +128,7 @@ class EventTable(Event):
                     '#c' : 'start',
                     '#d' : 'status'
                 },
-            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d"
+            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d, sponser, entry"
         )
         item = item['Item']
         event = Event(**item)

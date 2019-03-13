@@ -19,7 +19,9 @@ from app.util.return_dict import Successed, Failured
     "qualification": "初心者でもOK!",
     "detail": "テスト",
     "contact": "amachi@gmail.com",
-    "isPrivate": false
+    "isPrivate": false,
+    "sponser" : "なんとかサークル",
+    "entry" : "こちらのURLまで"
 }
 '''
 
