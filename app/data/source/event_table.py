@@ -35,6 +35,8 @@ class EventTable(Event):
                 'contact' : event.contact,
                 'status' : event.status,
                 'updateTime' : event.updateTime,
+                'sponser' : event.sponser,
+                'entry' : event.entry,
                 'countOfLike' : 0
             },
             ConditionExpression = "attribute_not_exists(eventId)"
