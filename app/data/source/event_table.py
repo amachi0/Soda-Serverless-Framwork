@@ -66,7 +66,9 @@ class EventTable(Event):
                 ':h' : event.qualification,
                 ':i' : event.detail,
                 ':j' : event.contact,
-                ':k' : event.status
+                ':k' : event.status,
+                ':l' : event.sponser,
+                ':m' : event.entry
             }
         )
     
