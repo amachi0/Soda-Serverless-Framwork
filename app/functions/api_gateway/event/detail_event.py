@@ -37,6 +37,8 @@ def detail_event(event, context):
             "price": event.price,
             "start": event.start,
             "isPrivate": event.isPrivate,
+            "sponser" : event.sponser,
+            "entry" : event.entry,
             "isFavorite": isFavorite
         }
 
