@@ -48,7 +48,7 @@ class EventTable(Event):
             Key = {
                 "eventId" : event.eventId
             },
-            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k",
+            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k, sponser=:l, entry=:m",
             ExpressionAttributeNames = {
                 '#a' : "start",
                 '#b' : "end",
