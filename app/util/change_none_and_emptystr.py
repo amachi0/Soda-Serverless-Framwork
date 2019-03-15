@@ -7,4 +7,5 @@ def emptystrToNoneInDict(item):
 def NoneToEmptystrInDict(item):
     for k, v in item.items():
         if(v is None):
-            item[k] = ""
+            if(k != 'end'):
+                item[k] = ""
