@@ -20,7 +20,7 @@ from app.util.return_dict import Successed, Failured
     "detail": "テスト",
     "contact": "amachi@gmail.com",
     "isPrivate": false,
-    "sponser" : "なんとかサークル",
+    "sponsor" : "なんとかサークル",
     "entry" : "こちらのURLまで"
 }
 '''

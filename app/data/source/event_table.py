@@ -35,7 +35,7 @@ class EventTable(Event):
                 'contact' : event.contact,
                 'status' : event.status,
                 'updateTime' : event.updateTime,
-                'sponser' : event.sponser,
+                'sponsor' : event.sponsor,
                 'entry' : event.entry,
                 'countOfLike' : 0
             },
@@ -48,7 +48,7 @@ class EventTable(Event):
             Key = {
                 "eventId" : event.eventId
             },
-            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k, sponser=:l, entry=:m",
+            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k, sponsor=:l, entry=:m",
             ExpressionAttributeNames = {
                 '#a' : "start",
                 '#b' : "end",
@@ -67,7 +67,7 @@ class EventTable(Event):
                 ':i' : event.detail,
                 ':j' : event.contact,
                 ':k' : event.status,
-                ':l' : event.sponser,
+                ':l' : event.sponsor,
                 ':m' : event.entry
             }
         )
@@ -128,7 +128,7 @@ class EventTable(Event):
                     '#c' : 'start',
                     '#d' : 'status'
                 },
-            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d, sponser, entry"
+            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d, sponsor, entry"
         )
         item = item['Item']
         event = Event(**item)
