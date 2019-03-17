@@ -41,6 +41,5 @@ def timeline_favorite(event, context):
         return Successed(res)
 
     except:
-        import traceback
-        traceback.print_exc()
-        return Failured()
+        import  traceback
+        return Failured(traceback.format_exc())

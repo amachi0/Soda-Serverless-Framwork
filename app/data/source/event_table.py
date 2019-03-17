@@ -15,6 +15,7 @@ class EventTable(Event):
             self.tableName = "dev-event"
         
         self.table = dynamodb.Table(self.tableName)
+        self.statusStartIndex = os.environ['EVENT_STATUS_START_INDEX']
     
     def insert(self, event=Event):
         event.createStatusFromIsPrivate()
@@ -34,6 +35,8 @@ class EventTable(Event):
                 'contact' : event.contact,
                 'status' : event.status,
                 'updateTime' : event.updateTime,
+                'sponsor' : event.sponsor,
+                'entry' : event.entry,
                 'countOfLike' : 0
             },
             ConditionExpression = "attribute_not_exists(eventId)"
@@ -45,7 +48,7 @@ class EventTable(Event):
             Key = {
                 "eventId" : event.eventId
             },
-            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k",
+            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k, sponsor=:l, entry=:m",
             ExpressionAttributeNames = {
                 '#a' : "start",
                 '#b' : "end",
@@ -63,7 +66,9 @@ class EventTable(Event):
                 ':h' : event.qualification,
                 ':i' : event.detail,
                 ':j' : event.contact,
-                ':k' : event.status
+                ':k' : event.status,
+                ':l' : event.sponsor,
+                ':m' : event.entry
             }
         )
     
@@ -97,6 +102,21 @@ class EventTable(Event):
             ConditionExpression = "contains(favorite, :y)"
         )
     
+    def updateStatuses(self, listEventId):
+        for eventId in listEventId:
+            self.table.update_item(
+                Key = {
+                    'eventId' : eventId
+                },
+                UpdateExpression = "set #name=:x",
+                ExpressionAttributeNames = {
+                    '#name' : "status"
+                },
+                ExpressionAttributeValues = {
+                    ':x' : "1"
+                }
+            )
+    
     def getForEventDetail(self, eventId):
         item = self.table.get_item(
             Key = {
@@ -108,7 +128,7 @@ class EventTable(Event):
                     '#c' : 'start',
                     '#d' : 'status'
                 },
-            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d"
+            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d, sponsor, entry"
         )
         item = item['Item']
         event = Event(**item)
@@ -125,6 +145,31 @@ class EventTable(Event):
         item = item['Item']
         event = Event(**item)
         return event
+    
+    def getFinishedEventIdList(self, unixTime):
+        itemsNotPrivate = self.table.query(
+            IndexName = self.statusStartIndex,
+            KeyConditionExpression = Key('status').eq('0_false') & Key('start').lt(unixTime),
+            FilterExpression = Attr('end').lt(unixTime) | Attr('end').attribute_type("NULL")
+        )
+
+        itemsPrivate = self.table.query(
+            IndexName = self.statusStartIndex,
+            KeyConditionExpression = Key('status').eq('0_true') & Key('start').lt(unixTime),
+            FilterExpression = Attr('end').lt(unixTime) | Attr('end').attribute_type("NULL")
+        )
+
+        eventIdList = []
+        if itemsNotPrivate["Count"] == 0 and itemsPrivate["Count"] == 0:
+            return eventIdList
+
+        for event in itemsNotPrivate['Items']:
+            eventIdList.append(event['eventId'])
+        
+        for event in itemsPrivate['Items']:
+            eventIdList.append(event['eventId'])
+
+        return eventIdList
     
     def batchGetFromListEventId(self, listEventId):
         listKeys = []

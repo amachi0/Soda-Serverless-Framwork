@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+from app.util.return_dict import Successed, Failured
 from app.util.decimalencoder import DecimalEncoder
 from boto3.dynamodb.conditions import Key, Attr
 from app.data.model_timeline import Query
@@ -105,15 +106,4 @@ def timeline_home(event, context):
         
     except:
         import  traceback
-        traceback.print_exc()
-        res_error = {
-            "result" : 0
-        }
-        return {
-            'statusCode' : 500,
-            'headers' : {
-                'content-type' : 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            'body' : json.dumps(res_error)
-        }
+        return Failured(traceback.format_exc())

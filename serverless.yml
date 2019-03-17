@@ -13,29 +13,38 @@ provider:
 plugins:
   - serverless-dynamodb-local
   - serverless-offline
+  - serverless-python-requirements
+
 custom:
   defaultStage: dev
   
   profileTable: 
     dev: dev-profile
     prod: profile
+    prod2: profile
 
   eventTable:
     dev: dev-event
     prod: event
+    prod2: event
   
   sequenceTable:
     dev: dev-sequence
     prod: sequence
+    prod2: sequence
   
   imageBucket:
     dev: soda-test-image
     prod: soda-image
+    prod2: soda-image
   
   serverless-offline: 
     port: 4000
   
   dynamodb:  ${file(./config/plugins/dynamodb-local.yml)}
+
+  pythonRequirements:
+    dockerizePip: true
 
 package:
   exclude:

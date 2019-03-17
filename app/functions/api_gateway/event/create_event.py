@@ -19,7 +19,9 @@ from app.util.return_dict import Successed, Failured
     "qualification": "初心者でもOK!",
     "detail": "テスト",
     "contact": "amachi@gmail.com",
-    "isPrivate": false
+    "isPrivate": false,
+    "sponsor" : "なんとかサークル",
+    "entry" : "こちらのURLまで"
 }
 '''
 
@@ -51,5 +53,4 @@ def create_event(event, context):
     
     except:
         import  traceback
-        traceback.print_exc()
-        return Failured()
+        return Failured(traceback.format_exc())
