@@ -196,8 +196,3 @@ functions:
     handler: app/functions/schedule/finish_event.finish_event
     timeout: 3
     events: ${file(./config/events.yml):edit_finish_event}
-  
-  send_mail_a_day:
-    handler: app/functions/schedule/send_mail_a_day.send_mail_a_day
-    timeout: 20
-    events: ${file(./config/events.yml):send_mail_a_day}
