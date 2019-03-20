@@ -120,6 +120,33 @@ class ProfileTable(Profile):
         profile = Profile(**param)
         return profile
     
+    def batchGetFromListIdentityId(self, listIdentityId):
+        listKey = []
+        for identityId in listIdentityId:
+            dic = {
+                "identityId": {
+                    "S": identityId
+                }
+            }
+            listKey.append(dic)
+
+        res = self.client.batch_get_item(
+            RequestItems={
+                self.tableName: {
+                    'Keys': listKey,
+                    'ProjectionExpression': 'email, isAcceptMail'
+                }
+            }
+        )
+        print(res)
+        profiles = []
+        for profile in res['Responses'][self.tableName]:
+            mProfile = Profile()
+            mProfile.email = profile['email']['S']
+            mProfile.isAcceptMail = profile['isAcceptMail']['BOOL']
+            profiles.append(mProfile)
+        return profiles
+
     def isValidEmail(self, email):
         itemList = self.table.query(
 			IndexName = self.checkEmailIndex,
