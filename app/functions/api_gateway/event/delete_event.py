@@ -1,15 +1,14 @@
 import json
 import os
-import  traceback
+import traceback
+from botocore.exceptions import ClientError
 from app.data.source.event_table import EventTable
 from app.data.source.profile_table import ProfileTable
+from app.data.sns import Sns
 from app.util.return_dict import Successed, Failured
 
-'''
-sns = boto3.resource('sns')
-topic_name = os.environ['SNS_CANCEL_TOPIC']
-topic = sns.Topic(topic_name)
-'''
+TOPIC_NAME = os.environ['SNS_CANCEL_TOPIC']
+
 
 def delete_event(event, context):
     try:
@@ -25,11 +24,12 @@ def delete_event(event, context):
             return Failured(traceback.format_exc())
 
         eventTable.delete(eventId)
-        
+
         listItem = [eventId]
 
         profileTable = ProfileTable(event)
-        profileTable.deleteListItemInProfileTable(mEvent.identityId, "myEvent", listItem)
+        profileTable.deleteListItemInProfileTable(
+            mEvent.identityId, "myEvent", listItem)
 
         if not mEvent.hasfavorite:
             res = {"result": 1}
@@ -44,8 +44,8 @@ def delete_event(event, context):
         sns = Sns(TOPIC_NAME)
         sns.publishFromDictiorary(message)
 
-        res = { "result" : 1 }
+        res = {"result": 1}
         return Successed(res)
-    
-    except:
+
+    except ClientError:
         return Failured(traceback.format_exc())
