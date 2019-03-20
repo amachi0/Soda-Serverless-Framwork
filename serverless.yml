@@ -194,5 +194,5 @@ functions:
   
   edit_finish_event:
     handler: app/functions/schedule/finish_event.finish_event
-    timeout: 3
+    timeout: 30
     events: ${file(./config/events.yml):edit_finish_event}
