@@ -1,11 +1,12 @@
 import json
+from botocore.exceptions import ClientError
 from app.util.return_dict import Successed, Failured
 from app.util.change_none_and_emptystr import emptystrToNoneInDict
 from app.data.profile import Profile
 from app.data.source.profile_table import ProfileTable
 
 ''' パラメーター
-{  
+{
   "identityId": "amachi2",
   "urlData": "test",
   "name": "test",
@@ -20,20 +21,21 @@ from app.data.source.profile_table import ProfileTable
 }
 '''
 
+
 def change_profile(event, context):
-  try:
-    param = json.loads(event['body'])
-    emptystrToNoneInDict(param)
-    profile = Profile(**param)
-    
-    profileTable = ProfileTable(event)
-    profileTable.change(profile)
-    
-    returnBody = {
-      "result" : 1
-    }
-    return Successed(returnBody)
-  
-  except:
-    import  traceback
-    return Failured(traceback.format_exc())
+    try:
+        param = json.loads(event['body'])
+        emptystrToNoneInDict(param)
+        profile = Profile(**param)
+
+        profileTable = ProfileTable(event)
+        profileTable.change(profile)
+
+        returnBody = {
+            "result": 1
+        }
+        return Successed(returnBody)
+
+    except ClientError:
+        import traceback
+        return Failured(traceback.format_exc())

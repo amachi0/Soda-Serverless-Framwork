@@ -1,7 +1,7 @@
 import json
 import boto3
 import time
-from boto3.dynamodb.conditions import Key, Attr
+from boto3.dynamodb.conditions import Key
 import os
 
 dynamodb = boto3.resource('dynamodb')
@@ -14,14 +14,16 @@ MAILFROM = os.environ['MAIL_ADRESS_FROM_SODA']
 finishIndex = os.environ['EVENT_FINISH_EVENT_INDEX']
 iconURL = "https://s3-ap-northeast-1.amazonaws.com/soda-image/61dd3033-94f9-47b8-9f2c-4bbd1d68ca0f.png"
 
+
 def get_user_info(identityId):
     res = profileTable.get_item(
-        Key = {
-            'identityId' : identityId
+        Key={
+            'identityId': identityId
         },
-        ProjectionExpression = "email, isAcceptMail"
+        ProjectionExpression="email, isAcceptMail"
     )
     return res['Item']
+
 
 def body_html(item):
     eventId = str(item['eventId'])
@@ -37,7 +39,7 @@ def body_html(item):
             </head>
             <body>
                 <div class="mx-auto" style="width: 50px;">
-                    <img class="mt-0 mb-2" src=""" + '"' + iconURL + '"' +  """ alt="" title="">
+                    <img class="mt-0 mb-2" src=""" + '"' + iconURL + '"' + """ alt="" title="">
                 </div>
 
                 <div class="card">
@@ -56,26 +58,27 @@ def body_html(item):
 
     return body
 
-def send_mail(to,item):
-    ses = boto3.client('ses', region_name = sesRegion)
+
+def send_mail(to, item):
+    ses = boto3.client('ses', region_name=sesRegion)
     eventName = item['eventName']
     eventId = item['eventId']
     ses.send_email(
-        Source = MAILFROM,
-        Destination = {
-            'ToAddresses' : [
+        Source=MAILFROM,
+        Destination={
+            'ToAddresses': [
                 to
             ]
         },
-        Message = {
-            'Subject' : {
-                'Data' : '本日のイベント',
-                'Charset' : 'UTF-8'
+        Message={
+            'Subject': {
+                'Data': '本日のイベント',
+                'Charset': 'UTF-8'
             },
-            'Body' : {
-                'Text' : {
-                    'Data' : "本日、" + eventName + "が開催されます。\n詳しくはこちら\nhttps://sodaevent.com/event?id=" + str(eventId),
-                    'Charset' : 'UTF-8'
+            'Body': {
+                'Text': {
+                    'Data': "本日、" + eventName + "が開催されます。\n詳しくはこちら\nhttps://sodaevent.com/event?id=" + str(eventId),
+                    'Charset': 'UTF-8'
                 },
                 'Html': {
                     'Data': body_html(item),
@@ -85,15 +88,17 @@ def send_mail(to,item):
         }
     )
 
+
 def send_mail_a_day(event, context):
     try:
-        #開始時間が一日以内のイベントをクエリで検索
+        # 開始時間が一日以内のイベントをクエリで検索
         dayOfSecond = 86400
         now = int(time.time())
         day_end = now + dayOfSecond
         items = eventTable.query(
-            IndexName = finishIndex,
-            KeyConditionExpression = Key('finish').eq(0) & Key('start').lt(day_end)
+            IndexName=finishIndex,
+            KeyConditionExpression=Key('finish').eq(
+                0) & Key('start').lt(day_end)
         )
         print(items)
         for res in items['Items']:
@@ -104,34 +109,34 @@ def send_mail_a_day(event, context):
                 userData = get_user_info(user)
                 if not ("isAcceptMail" in userData):
                     continue
-                
+
                 if not ("email" in userData):
                     continue
-                
+
                 if(userData['isAcceptMail']):
                     send_mail(userData['email'], res)
 
         res = {
-            "result" : 1
+            "result": 1
         }
         return {
-            'statusCode' : 200,
-            'headers' : {
-                'content-type' : 'application/json'
+            'statusCode': 200,
+            'headers': {
+                'content-type': 'application/json'
             },
-            'body' : json.dumps(res)
+            'body': json.dumps(res)
         }
-    
+
     except:
-        import  traceback
+        import traceback
         traceback.print_exc()
         res = {
-            "result" : 0
+            "result": 0
         }
         return {
-            'statusCode' : 500,
-            'headers' : {
-                'content-type' : 'application/json'
+            'statusCode': 500,
+            'headers': {
+                'content-type': 'application/json'
             },
-            'body' : json.dumps(res)
+            'body': json.dumps(res)
         }

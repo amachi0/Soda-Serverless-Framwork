@@ -1,8 +1,9 @@
-from app.data.profile import Profile
+from botocore.exceptions import ClientError
 from app.data.source.profile_table import ProfileTable
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
 from app.util.change_none_and_emptystr import NoneToEmptystrInDict
+
 
 def detail_event(event, context):
     try:
@@ -13,9 +14,10 @@ def detail_event(event, context):
         listFavorite = []
         if(identityId != "null"):
             profileTable = ProfileTable(event)
-            profile = profileTable.getFromIdentityId(identityId, "favoriteEvent")
+            profile = profileTable.getFromIdentityId(
+                identityId, "favoriteEvent")
             listFavorite = profile.favoriteEvent
-            
+
         eventTable = EventTable(event)
         event = eventTable.getForEventDetail(eventId)
 
@@ -38,15 +40,15 @@ def detail_event(event, context):
             "price": event.price,
             "start": event.start,
             "isPrivate": event.isPrivate,
-            "sponsor" : event.sponsor,
-            "entry" : event.entry,
+            "sponsor": event.sponsor,
+            "entry": event.entry,
             "isFavorite": isFavorite
         }
 
         NoneToEmptystrInDict(res)
 
         return Successed(res)
-    
-    except:
-        import  traceback
+
+    except ClientError:
+        import traceback
         return Failured(traceback.format_exc())
