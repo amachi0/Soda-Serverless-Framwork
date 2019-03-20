@@ -18,7 +18,8 @@ def delete_event(event, context):
         identityId = param['identityId']
 
         eventTable = EventTable(event)
-        mEvent = eventTable.getFromEventId(eventId, "identityId")
+        mEvent = eventTable.getFromEventId(
+            eventId, "identityId, favorite, eventName")
 
         if identityId != mEvent.identityId:
             return Failured(traceback.format_exc())
