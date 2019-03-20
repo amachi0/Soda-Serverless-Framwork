@@ -37,3 +37,9 @@ class Event():
             self.isPrivate = False
         else:
             self.isPrivate = True
+
+    def hasfavorite(self):
+        if len(self.favorite) != 0:
+            return True
+        else:
+            return False
