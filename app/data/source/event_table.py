@@ -3,6 +3,7 @@ import os
 from boto3.dynamodb.conditions import Key, Attr
 from app.data.event import Event
 
+
 class EventTable(Event):
     def __init__(self, event):
         dynamodb = boto3.resource('dynamodb')
@@ -10,153 +11,165 @@ class EventTable(Event):
         self.tableName = os.environ['EVENT_TABLE']
 
         if 'isOffline' in event and event['isOffline']:
-            dynamodb = boto3.resource('dynamodb', endpoint_url='http://localhost:8000')
-            self.client = boto3.client('dynamodb', endpoint_url='http://localhost:8000')
+            dynamodb = boto3.resource(
+                'dynamodb', endpoint_url='http://localhost:8000')
+            self.client = boto3.client(
+                'dynamodb', endpoint_url='http://localhost:8000')
             self.tableName = "dev-event"
-        
+
         self.table = dynamodb.Table(self.tableName)
         self.statusStartIndex = os.environ['EVENT_STATUS_START_INDEX']
-    
+
     def insert(self, event=Event):
         event.createStatusFromIsPrivate()
         self.table.put_item(
-            Item = {
-                'identityId' : event.identityId,
-                'eventId' : event.eventId,
-                'eventName' : event.eventName,
-                'urlData' : event.urlData,
-                'university' : event.university,
-                'price' : event.price,
-                'location' : event.location,
-                'start' : event.start,
-                'end' : event.end,
-                'qualification' : event.qualification,
-                'detail' : event.detail,
-                'contact' : event.contact,
-                'status' : event.status,
-                'updateTime' : event.updateTime,
-                'sponsor' : event.sponsor,
-                'entry' : event.entry,
-                'countOfLike' : 0
+            Item={
+                'identityId': event.identityId,
+                'eventId': event.eventId,
+                'eventName': event.eventName,
+                'urlData': event.urlData,
+                'university': event.university,
+                'price': event.price,
+                'location': event.location,
+                'start': event.start,
+                'end': event.end,
+                'qualification': event.qualification,
+                'detail': event.detail,
+                'contact': event.contact,
+                'status': event.status,
+                'updateTime': event.updateTime,
+                'sponsor': event.sponsor,
+                'entry': event.entry,
+                'countOfLike': 0
             },
-            ConditionExpression = "attribute_not_exists(eventId)"
+            ConditionExpression="attribute_not_exists(eventId)"
         )
-    
+
     def change(self, event=Event):
         event.createStatusFromIsPrivate()
         self.table.update_item(
-            Key = {
-                "eventId" : event.eventId
+            Key={
+                "eventId": event.eventId
             },
-            UpdateExpression = "set urlData=:a,#a=:b,#b=:c,university=:d,eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i,contact=:j,#d=:k, sponsor=:l, entry=:m",
-            ExpressionAttributeNames = {
-                '#a' : "start",
-                '#b' : "end",
-                '#c' : "location",
-                '#d' : "status"
+            UpdateExpression="set urlData=:a,#a=:b,#b=:c,university=:d, \
+                eventName=:e,price=:f,#c=:g,qualification=:h,detail=:i, \
+                contact=:j,#d=:k, sponsor=:l, entry=:m",
+            ExpressionAttributeNames={
+                '#a': "start",
+                '#b': "end",
+                '#c': "location",
+                '#d': "status"
             },
-            ExpressionAttributeValues = {
-                ':a' : event.urlData,
-                ':b' : event.start,
-                ':c' : event.end,
-                ':d' : event.university,
-                ':e' : event.eventName,
-                ':f' : event.price,
-                ':g' : event.location,
-                ':h' : event.qualification,
-                ':i' : event.detail,
-                ':j' : event.contact,
-                ':k' : event.status,
-                ':l' : event.sponsor,
-                ':m' : event.entry
+            ExpressionAttributeValues={
+                ':a': event.urlData,
+                ':b': event.start,
+                ':c': event.end,
+                ':d': event.university,
+                ':e': event.eventName,
+                ':f': event.price,
+                ':g': event.location,
+                ':h': event.qualification,
+                ':i': event.detail,
+                ':j': event.contact,
+                ':k': event.status,
+                ':l': event.sponsor,
+                ':m': event.entry
             }
         )
-    
+
     def addFavorite(self, eventId, listItem):
         identityId = listItem[0]
         self.table.update_item(
-            Key = {
-                "eventId" : eventId
+            Key={
+                "eventId": eventId
             },
-            UpdateExpression = "ADD favorite :x SET countOfLike = countOfLike + :val",
-            ExpressionAttributeValues = {
-                ':x' : set(listItem),
-                ':y' : identityId,
-                ':val' : 1
+            UpdateExpression="ADD favorite :x SET countOfLike \
+                = countOfLike + :val",
+            ExpressionAttributeValues={
+                ':x': set(listItem),
+                ':y': identityId,
+                ':val': 1
             },
-            ConditionExpression = "NOT (contains(favorite, :y))"
+            ConditionExpression="NOT (contains(favorite, :y))"
         )
-    
+
     def removeFavorite(self, eventId, listItem):
         identityId = listItem[0]
         self.table.update_item(
-            Key = {
-                "eventId" : eventId
+            Key={
+                "eventId": eventId
             },
-            UpdateExpression = "DELETE favorite :x SET countOfLike = countOfLike - :val",
-            ExpressionAttributeValues = {
-                ':x' : set(listItem),
-                ':y' : identityId,
-                ':val' : 1
+            UpdateExpression="DELETE favorite :x SET countOfLike \
+                = countOfLike - :val",
+            ExpressionAttributeValues={
+                ':x': set(listItem),
+                ':y': identityId,
+                ':val': 1
             },
-            ConditionExpression = "contains(favorite, :y)"
+            ConditionExpression="contains(favorite, :y)"
         )
-    
+
     def updateStatuses(self, listEventId):
         for eventId in listEventId:
             self.table.update_item(
-                Key = {
-                    'eventId' : eventId
+                Key={
+                    'eventId': eventId
                 },
-                UpdateExpression = "set #name=:x",
-                ExpressionAttributeNames = {
-                    '#name' : "status"
+                UpdateExpression="set #name=:x",
+                ExpressionAttributeNames={
+                    '#name': "status"
                 },
-                ExpressionAttributeValues = {
-                    ':x' : "1"
+                ExpressionAttributeValues={
+                    ':x': "1"
                 }
             )
-    
+
     def getForEventDetail(self, eventId):
         item = self.table.get_item(
-            Key = {
-                'eventId' : eventId
+            Key={
+                'eventId': eventId
             },
-            ExpressionAttributeNames = {
-                    '#a' : "end",
-                    '#b' : 'location',
-                    '#c' : 'start',
-                    '#d' : 'status'
-                },
-            ProjectionExpression = "identityId, eventId, sodaId, contact, countOfLike, detail, #a, eventName, #b, price, qualification, #c, university, updateTime, urlData, #d, sponsor, entry"
+            ExpressionAttributeNames={
+                '#a': "end",
+                '#b': 'location',
+                '#c': 'start',
+                '#d': 'status'
+            },
+            ProjectionExpression="identityId, eventId, sodaId, contact, \
+                countOfLike, detail, #a, eventName, #b, price, qualification, \
+                #c, university, updateTime, urlData, #d, sponsor, entry"
         )
         item = item['Item']
         event = Event(**item)
         event.createIsPrivateFromStatus()
         return event
-    
+
     def getFromEventId(self, eventId, projectionExpression=None):
         item = self.table.get_item(
-            Key = {
-                'eventId' : eventId
+            Key={
+                'eventId': eventId
             },
-            ProjectionExpression = projectionExpression
+            ProjectionExpression=projectionExpression
         )
         item = item['Item']
         event = Event(**item)
         return event
-    
+
     def getFinishedEventIdList(self, unixTime):
         itemsNotPrivate = self.table.query(
-            IndexName = self.statusStartIndex,
-            KeyConditionExpression = Key('status').eq('0_false') & Key('start').lt(unixTime),
-            FilterExpression = Attr('end').lt(unixTime) | Attr('end').attribute_type("NULL")
+            IndexName=self.statusStartIndex,
+            KeyConditionExpression=Key('status').eq(
+                '0_false') & Key('start').lt(unixTime),
+            FilterExpression=Attr('end').lt(unixTime) | Attr(
+                'end').attribute_type("NULL")
         )
 
         itemsPrivate = self.table.query(
-            IndexName = self.statusStartIndex,
-            KeyConditionExpression = Key('status').eq('0_true') & Key('start').lt(unixTime),
-            FilterExpression = Attr('end').lt(unixTime) | Attr('end').attribute_type("NULL")
+            IndexName=self.statusStartIndex,
+            KeyConditionExpression=Key('status').eq(
+                '0_true') & Key('start').lt(unixTime),
+            FilterExpression=Attr('end').lt(unixTime) | Attr(
+                'end').attribute_type("NULL")
         )
 
         eventIdList = []
@@ -165,31 +178,32 @@ class EventTable(Event):
 
         for event in itemsNotPrivate['Items']:
             eventIdList.append(event['eventId'])
-        
+
         for event in itemsPrivate['Items']:
             eventIdList.append(event['eventId'])
 
         return eventIdList
-    
+
     def batchGetFromListEventId(self, listEventId):
         listKeys = []
         for eventId in listEventId:
             dic = {
-                "eventId" : {
-                    "N" : str(eventId)
+                "eventId": {
+                    "N": str(eventId)
                 }
             }
             listKeys.append(dic)
         res = self.client.batch_get_item(
-            RequestItems = {
-                self.tableName : {
-                    'Keys' : listKeys,
-                    'ExpressionAttributeNames' : {
-                        '#e' : "end",
-                        '#l' : 'location',
-                        '#s' : 'start'
+            RequestItems={
+                self.tableName: {
+                    'Keys': listKeys,
+                    'ExpressionAttributeNames': {
+                        '#e': "end",
+                        '#l': 'location',
+                        '#s': 'start'
                     },
-                    'ProjectionExpression' : 'eventId, eventName, updateTime, #s, #e, #l, urlData, university, countOfLike'
+                    'ProjectionExpression': 'eventId, eventName, updateTime, \
+                        #s, #e, #l, urlData, university, countOfLike'
                 }
             }
         )
@@ -210,10 +224,10 @@ class EventTable(Event):
             myEvent.countOfLike = int(event['countOfLike']['N'])
             events.append(myEvent)
         return events
-    
+
     def delete(self, eventId):
         self.table.delete_item(
-            Key = {
-                'eventId' : eventId
+            Key={
+                'eventId': eventId
             }
         )
