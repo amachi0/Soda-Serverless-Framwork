@@ -41,14 +41,8 @@ def delete_event(event, context):
             'listFavorite': list(mEvent.favorite)
         }
 
-        if("favorite" in itemEvent['Item']):
-            list = itemEvent['Item']['favorite']
-            message['list'] = list
-            messageJson = json.dumps(message)
-            topic.publish(
-                Message = messageJson
-            )
-        '''
+        sns = Sns(TOPIC_NAME)
+        sns.publishFromDictiorary(message)
 
         res = { "result" : 1 }
         return Successed(res)
