@@ -8,7 +8,6 @@ from app.util.return_dict import Successed, Failured
 def cancel_sns(event, context):
     try:
         message = json.loads(event['Records'][0]['Sns']['Message'])
-        print(message)
         eventId = message['eventId']
         title = message['title']
         listFavorite = message['listFavorite']
