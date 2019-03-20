@@ -31,7 +31,10 @@ def delete_event(event, context):
         profileTable = ProfileTable(event)
         profileTable.deleteListItemInProfileTable(mEvent.identityId, "myEvent", listItem)
 
-        ''' キャンセルされたらいいねをしていた人にお知らせを送る
+        if not mEvent.hasfavorite:
+            res = {"result": 1}
+            return Successed(res)
+
         message = {
             'eventId' : int(event.eventId),
             'title' : event.eventName
