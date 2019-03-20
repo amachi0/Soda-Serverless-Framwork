@@ -1,8 +1,10 @@
 class Profile:
-    def __init__(self, identityId=None, sodaId=None, email=None, universities=[], name=None, 
-                    urlData=None, profile=None, twitter=None, facebook=None, instagram=None, 
-                    favoriteEvent=set([]), myEvent=set([]), templates=[], isAcceptMail=True):
-        
+    def __init__(self, identityId=None, sodaId=None, email=None,
+                 universities=[], name=None, urlData=None, profile=None,
+                 twitter=None, facebook=None, instagram=None,
+                 favoriteEvent=set(), myEvent=set(), templates=[],
+                 isAcceptMail=True):
+
         self.identityId = identityId
         self.sodaId = sodaId
         self.email = email
@@ -23,19 +25,19 @@ class Profile:
             return True
         else:
             return False
-    
+
     def hasUrlData(self):
         if self.urlData:
             return True
         else:
             return False
-    
+
     def hasMyEvent(self):
         if self.name:
             return True
         else:
             return False
-    
+
     def createNameFromEmail(self):
         emailSplit = self.email.rsplit("@")
         self.name = emailSplit[0]

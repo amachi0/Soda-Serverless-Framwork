@@ -16,25 +16,26 @@ from app.data.source.profile_table import ProfileTable
 }
 '''
 
+
 def create_user(event, context):
-  try:
-    param = json.loads(event['body'])
-    profile = Profile(**param)
+    try:
+        param = json.loads(event['body'])
+        profile = Profile(**param)
 
-    if not profile.hasName():
-      profile.createNameFromEmail()
-    
-    if not profile.hasUrlData():
-      profile.urlData = None
+        if not profile.hasName():
+            profile.createNameFromEmail()
 
-    profileTable = ProfileTable(event)
-    profileTable.insert(profile)
+        if not profile.hasUrlData():
+            profile.urlData = None
 
-    returnBody = {
-      "result" : 1
-    }
-    return Successed(returnBody)
-        
-  except:
-    import  traceback
-    return Failured(traceback.format_exc())
+        profileTable = ProfileTable(event)
+        profileTable.insert(profile)
+
+        returnBody = {
+            "result": 1
+        }
+        return Successed(returnBody)
+
+    except:
+        import traceback
+        return Failured(traceback.format_exc())
