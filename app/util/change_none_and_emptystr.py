@@ -4,6 +4,7 @@ def emptystrToNoneInDict(item):
             if(v == ""):
                 item[k] = None
 
+
 def NoneToEmptystrInDict(item):
     for k, v in item.items():
         if(v is None):

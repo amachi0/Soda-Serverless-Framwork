@@ -1,9 +1,7 @@
-import json
 import boto3
 import os
+from botocore.exceptions import ClientError
 from app.util.return_dict import Successed, Failured
-from app.util.decimalencoder import DecimalEncoder
-from boto3.dynamodb.conditions import Key, Attr
 from app.data.model_timeline import Query
 
 dynamodb = boto3.resource('dynamodb')
@@ -11,20 +9,21 @@ profileTableName = os.environ['PROFILE_TABLE']
 eventTableName = os.environ['EVENT_TABLE']
 statusUpdateTimeIndex = os.environ['EVENT_STATUS_UPDATETIME_INDEX']
 
+
 def timeline_new(event, context):
     try:
         identityId = event['queryStringParameters']['identityId']
         startIndex = int(event['queryStringParameters']['startIndex'])
         favoriteList = []
 
-        #identityIdがあった場合
+        # identityIdがあった場合
         if (identityId != "null"):
             profileTable = dynamodb.Table(profileTableName)
             itemProfile = profileTable.get_item(
-                Key = {
-                    "identityId" : identityId
+                Key={
+                    "identityId": identityId
                 },
-                ProjectionExpression = "universities, favoriteEvent"
+                ProjectionExpression="universities, favoriteEvent"
             )
 
             if not ("Item" in itemProfile):
@@ -32,18 +31,18 @@ def timeline_new(event, context):
 
             elif not (itemProfile['Item']['universities']):
                 pass
-        
+
             else:
                 universities = itemProfile['Item']['universities']
 
-            #いいねを今現在押しているイベントかどうかを判定したい
+            # いいねを今現在押しているイベントかどうかを判定したい
             if('favoriteEvent' in itemProfile['Item']):
                 favoriteList = itemProfile['Item']['favoriteEvent']
-        
+
         if startIndex == 0 and identityId == "null":
             model = Query(statusUpdateTimeIndex)
             result = model.queryFirstNoUniversity()
-        
+
         elif startIndex == 0 and identityId != "null":
             model = Query(statusUpdateTimeIndex)
             result = model.queryFirst(universities)
@@ -52,24 +51,24 @@ def timeline_new(event, context):
             lastEventId = event['queryStringParameters']['lastEventId']
             lastUpdateTime = event['queryStringParameters']['lastUpdateTime']
             startKey = {
-                "eventId" : int(lastEventId),
-                "updateTime" : int(lastUpdateTime),
-                "status" : "0_false"
+                "eventId": int(lastEventId),
+                "updateTime": int(lastUpdateTime),
+                "status": "0_false"
             }
             model = Query(statusUpdateTimeIndex)
             result = model.queryNextNoUniversity(startKey)
-        
+
         elif startIndex != 0 and identityId != "null":
             lastEventId = event['queryStringParameters']['lastEventId']
             lastUpdateTime = event['queryStringParameters']['lastUpdateTime']
             startKey = {
-                "eventId" : int(lastEventId),
-                "updateTime" : int(lastUpdateTime),
-                "status" : "0_false"
+                "eventId": int(lastEventId),
+                "updateTime": int(lastUpdateTime),
+                "status": "0_false"
             }
             model = Query(statusUpdateTimeIndex)
             result = model.queryNext(universities, startKey)
-        
+
         print(result)
         res = {}
         i = startIndex
@@ -87,7 +86,7 @@ def timeline_new(event, context):
             res[i]["urlData"] = hit['urlData']
             res[i]["university"] = hit['university']
             res[i]["countOfLike"] = int(hit['countOfLike'])
-            
+
             if(int(res[i]["eventId"]) in favoriteList):
                 res[i]["isFavorite"] = True
             else:
@@ -95,15 +94,8 @@ def timeline_new(event, context):
 
             i += 1
 
-        return {
-            "statusCode": 200,
-            'headers' : {
-                'content-type' : 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-            "body": json.dumps(res, cls = DecimalEncoder)
-        }
-        
-    except:
-        import  traceback
+        return Successed(res)
+
+    except ClientError:
+        import traceback
         return Failured(traceback.format_exc())
