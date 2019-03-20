@@ -36,8 +36,9 @@ def delete_event(event, context):
             return Successed(res)
 
         message = {
-            'eventId' : int(event.eventId),
-            'title' : event.eventName
+            'eventId': eventId,
+            'title': mEvent.eventName,
+            'listFavorite': list(mEvent.favorite)
         }
 
         if("favorite" in itemEvent['Item']):
