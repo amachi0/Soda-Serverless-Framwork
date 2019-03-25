@@ -190,6 +190,10 @@ cancel_sns:
   - sns:
       ${self:provider.environment.SNS_CANCEL_TOPIC}
 
+send_week_mail:
+  - sns:
+      ${self:provider.environment.SNS_SEND_WEEK_MAIL}
+
 post_event_template:
   - http:
       path: template
@@ -217,8 +221,8 @@ post_image_to_s3:
 edit_finish_event:
   - schedule: cron(0 15 * * ? *)
 
-send_mail_a_day:
-  - schedule: cron(0 23 * * ? *)
+prepare_week_mail:
+  - schedule: cron(0 23 ? * SUN *)
 
 search_events:
   - http:

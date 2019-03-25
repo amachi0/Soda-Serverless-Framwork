@@ -38,6 +38,16 @@ custom:
     prod: soda-image
     prod2: soda-image
   
+  sns:
+    cancelTopic:
+      dev: dev_cancel_event
+      prod: cancel_event
+      prod2: cancel_event
+    sendWeekMail:
+      dev: dev_send_week_mail
+      prod: send_week_mail
+      prod2: send_week_mail
+
   serverless-offline: 
     port: 4000
   
@@ -196,3 +206,13 @@ functions:
     handler: app/functions/schedule/finish_event.finish_event
     timeout: 30
     events: ${file(./config/events.yml):edit_finish_event}
+  
+  prepare_week_mail:
+    handler: app/functions/schedule/prepare_week_mail.prepare_week_mail
+    timeout: 30
+    events: ${file(./config/events.yml):prepare_week_mail}
+
+  send_week_mail:
+    handler: app/functions/sns/send_week_mail.send_week_mail
+    timeout: 30
+    events: ${file(./config/events.yml):send_week_mail}

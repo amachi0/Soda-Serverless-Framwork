@@ -1,5 +1,6 @@
 import boto3
 import json
+from app.util.decimalencoder import DecimalEncoder
 
 
 class Sns():
@@ -8,7 +9,7 @@ class Sns():
         self.topic = sns.Topic(topicName)
 
     def publishFromDictiorary(self, messageDict):
-        messageJson = json.dumps(messageDict)
+        messageJson = json.dumps(messageDict, cls=DecimalEncoder)
         self.topic.publish(
             Message=messageJson
         )

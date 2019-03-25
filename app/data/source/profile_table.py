@@ -145,12 +145,27 @@ class ProfileTable(Profile):
                 }
             }
         )
-        print(res)
         profiles = []
         for profile in res['Responses'][self.tableName]:
             mProfile = Profile()
             mProfile.email = profile['email']['S']
             mProfile.isAcceptMail = profile['isAcceptMail']['BOOL']
+            profiles.append(mProfile)
+        return profiles
+
+    def scanForWeekMail(self):
+        response = self.table.scan(
+            FilterExpression=Attr('isAcceptMail').eq(True),
+            ProjectionExpression='email'
+        )
+        items = response['Items']
+        while 'LastEvaluatedKey' in response:
+            response = self.table.scan(
+                ExclusiveStartKey=response['LastEvaluatedKey'])
+            items.extend(response['Items'])
+        profiles = []
+        for profile in items:
+            mProfile = Profile(**profile)
             profiles.append(mProfile)
         return profiles
 

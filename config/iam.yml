@@ -19,6 +19,7 @@
     - "dynamodb:UpdateItem"
     - "dynamodb:PutItem"
     - "dynamodb:BatchGetItem"
+    - "dynamodb:Scan"
 
 - Effect: Allow
   Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.profileTable.${self:provider.stage}}/index/*
@@ -44,6 +45,11 @@
 
 - Effect: Allow
   Resource: ${self:provider.environment.SNS_CANCEL_TOPIC}
+  Action:
+    - "sns:Publish"
+
+- Effect: Allow
+  Resource: ${self:provider.environment.SNS_SEND_WEEK_MAIL}
   Action:
     - "sns:Publish"
 

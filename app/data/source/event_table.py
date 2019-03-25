@@ -225,6 +225,29 @@ class EventTable(Event):
             events.append(myEvent)
         return events
 
+    def queryForWeekMail(self, unixTime):
+        from app.logic.change_start_in_event import changeStartInEvent
+
+        res = self.table.query(
+            IndexName=self.statusStartIndex,
+            KeyConditionExpression=Key('status').eq(
+                '0_false') & Key('start').lt(unixTime),
+            ExpressionAttributeNames={
+                '#start': 'start',
+                '#location': 'location'
+            },
+            ProjectionExpression='eventName, eventId, \
+                #start, #location, countOfLike'
+        )
+        events = []
+        items = res['Items']
+        for event in items:
+            mEvent = Event(**event)
+            changeStartInEvent(mEvent)
+            events.append(mEvent)
+        events.sort(key=lambda x: x.countOfLike, reverse=True)
+        return events[:20]
+
     def delete(self, eventId):
         self.table.delete_item(
             Key={
