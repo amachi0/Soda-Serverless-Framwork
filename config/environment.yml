@@ -25,7 +25,7 @@ FAQS_JSON: faqs.json
 TERMS_JSON: terms.json
 UNIVERSITY_JSON: university.json
 
-SNS_CANCEL_TOPIC: arn:aws:sns:ap-northeast-1:004586830768:cancel_event
+SNS_CANCEL_TOPIC: arn:aws:sns:ap-northeast-1:004586830768:${self:custom.sns.cancelTopic.${self:provider.stage}}
 
 SES_REGION: us-east-1
 
