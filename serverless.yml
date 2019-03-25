@@ -206,3 +206,8 @@ functions:
     handler: app/functions/schedule/finish_event.finish_event
     timeout: 30
     events: ${file(./config/events.yml):edit_finish_event}
+  
+  prepare_week_mail:
+    handler: app/functions/schedule/prepare_week_mail.prepare_week_mail
+    timeout: 30
+    events: ${file(./config/events.yml):prepare_week_mail}
