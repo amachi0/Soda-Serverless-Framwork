@@ -29,3 +29,15 @@ class Ses():
                 }
             }
         )
+
+    def sendMailTemplate(self, to, data):
+        self.client.send_templated_email(
+            Source=self.MAILFROM,
+            Destination={
+                'ToAddresses': [
+                    to
+                ]
+            },
+            Template='SodaWeekMail',
+            TemplateData=data
+        )
