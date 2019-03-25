@@ -145,7 +145,6 @@ class ProfileTable(Profile):
                 }
             }
         )
-        print(res)
         profiles = []
         for profile in res['Responses'][self.tableName]:
             mProfile = Profile()
