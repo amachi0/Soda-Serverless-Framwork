@@ -211,3 +211,8 @@ functions:
     handler: app/functions/schedule/prepare_week_mail.prepare_week_mail
     timeout: 30
     events: ${file(./config/events.yml):prepare_week_mail}
+
+  send_week_mail:
+    handler: app/functions/sns/send_week_mail.send_week_mail
+    timeout: 30
+    events: ${file(./config/events.yml):send_week_mail}
