@@ -190,6 +190,10 @@ cancel_sns:
   - sns:
       ${self:provider.environment.SNS_CANCEL_TOPIC}
 
+send_week_mail:
+  - sns:
+      ${self:provider.environment.SNS_SEND_WEEK_MAIL}
+
 post_event_template:
   - http:
       path: template
