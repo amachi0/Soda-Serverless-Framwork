@@ -49,6 +49,11 @@
     - "sns:Publish"
 
 - Effect: Allow
+  Resource: ${self:provider.environment.SNS_SEND_WEEK_MAIL}
+  Action:
+    - "sns:Publish"
+
+- Effect: Allow
   Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.eventTable.${self:provider.stage}}/index/*
   Action:
     - "dynamodb:Query"
