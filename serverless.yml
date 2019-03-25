@@ -38,6 +38,16 @@ custom:
     prod: soda-image
     prod2: soda-image
   
+  sns:
+    cancelTopic:
+      dev: dev_cancel_event
+      prod: cancel_event
+      prod2: cancel_event
+    sendWeekMail:
+      dev: dev_send_week_mail
+      prod: send_week_mail
+      prod2: send_week_mail
+
   serverless-offline: 
     port: 4000
   
