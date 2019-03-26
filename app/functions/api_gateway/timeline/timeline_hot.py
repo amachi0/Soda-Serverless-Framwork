@@ -69,7 +69,6 @@ def timeline_hot(event, context):
             model = Query(statusCountOfLikeIndex)
             result = model.queryNext(universities, startKey)
 
-        print(result)
         res = {}
         i = startIndex
         for hit in result:

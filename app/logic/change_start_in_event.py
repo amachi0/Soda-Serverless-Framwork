@@ -15,7 +15,6 @@ def changeStartInEvent(event=Event):
     strWeekDay = dayOfTheWeek[weekday]
 
     date = str(month) + '/' + str(date) + strWeekDay
-    print(date)
     event.start = date
 
 
