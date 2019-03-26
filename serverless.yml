@@ -18,35 +18,17 @@ plugins:
 custom:
   defaultStage: dev
   
-  profileTable: 
-    dev: dev-profile
-    prod: profile
-    prod2: profile
+  profileTable: ${file(./config/custom.yml):profileTable}
 
-  eventTable:
-    dev: dev-event
-    prod: event
-    prod2: event
+  eventTable: ${file(./config/custom.yml):eventTable}
   
-  sequenceTable:
-    dev: dev-sequence
-    prod: sequence
-    prod2: sequence
+  sequenceTable: ${file(./config/custom.yml):sequenceTable}
   
-  imageBucket:
-    dev: soda-test-image
-    prod: soda-image
-    prod2: soda-image
+  imageBucket: ${file(./config/custom.yml):imageBucket}
   
-  sns:
-    cancelTopic:
-      dev: dev_cancel_event
-      prod: cancel_event
-      prod2: cancel_event
-    sendWeekMail:
-      dev: dev_send_week_mail
-      prod: send_week_mail
-      prod2: send_week_mail
+  sns: ${file(./config/custom.yml):sns}
+  
+  twitter: ${file(./config/custom.yml):twitter}
 
   serverless-offline: 
     port: 4000
