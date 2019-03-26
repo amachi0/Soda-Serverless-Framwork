@@ -7,7 +7,7 @@ dayOfTheWeek = ['(月)', '(火)', '(水)', '(木)', '(金)', '(土)', '(日)']
 def changeStartInEvent(event=Event):
     unixTime = event.start
     print(unixTime)
-    dateTime = datetime.date.fromtimestamp(unixTime)
+    dateTime = datetime.fromtimestamp(unixTime)
     month = dateTime.month
     date = dateTime.day
 
