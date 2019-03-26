@@ -248,6 +248,25 @@ class EventTable(Event):
         events.sort(key=lambda x: x.countOfLike, reverse=True)
         return events[:20]
 
+    def queryForTweet(self, unixTime):
+        res = self.table.query(
+            IndexName=self.statusStartIndex,
+            KeyConditionExpression=Key('status').eq(
+                '0_false') & Key('start').lt(unixTime),
+            ExpressionAttributeNames={
+                '#start': 'start',
+                '#end': 'end',
+                '#location': 'location'
+            },
+            ProjectionExpression='eventName, eventId, #start, #end, #location'
+        )
+        items = res['Items']
+        events = []
+        for event in items:
+            mEvent = Event(**event)
+            events.append(mEvent)
+        return events
+
     def delete(self, eventId):
         self.table.delete_item(
             Key={

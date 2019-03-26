@@ -224,6 +224,9 @@ edit_finish_event:
 prepare_week_mail:
   - schedule: cron(0 23 ? * SUN *)
 
+tweet_event_info:
+  - schedule: cron(0 23 * * ? *)
+
 search_events:
   - http:
       path: search
