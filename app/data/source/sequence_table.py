@@ -9,7 +9,6 @@ class SequenceTable():
         dynamodb = boto3.resource('dynamodb')
         tableName = os.environ['SEQUENCE_TABLE']
 
-        print(event)
         if 'isOffline' in event and event['isOffline']:
             dynamodb = boto3.resource(
                 'dynamodb', endpoint_url='http://localhost:8000')

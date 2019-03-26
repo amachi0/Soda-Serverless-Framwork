@@ -2,12 +2,11 @@ from app.data.event import Event
 from datetime import datetime, timezone, timedelta
 
 dayOfTheWeek = ['(月)', '(火)', '(水)', '(木)', '(金)', '(土)', '(日)']
+JST = timezone(timedelta(hours=+9), 'JST')
 
 
 def changeStartInEvent(event=Event):
-    unixTime = event.start
-    print(unixTime)
-    dateTime = datetime.fromtimestamp(unixTime)
+    dateTime = datetime.fromtimestamp(event.start, JST)
     month = dateTime.month
     date = dateTime.day
 
@@ -15,12 +14,10 @@ def changeStartInEvent(event=Event):
     strWeekDay = dayOfTheWeek[weekday]
 
     date = str(month) + '/' + str(date) + strWeekDay
-    print(date)
     event.start = date
 
 
 def getStrFromStartAndEndInEvent(event=Event):
-    JST = timezone(timedelta(hours=+9), 'JST')
     startDateTime = datetime.fromtimestamp(event.start, JST)
 
     startStrHour = str(startDateTime.hour)

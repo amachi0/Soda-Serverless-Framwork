@@ -69,7 +69,6 @@ def timeline_new(event, context):
             model = Query(statusUpdateTimeIndex)
             result = model.queryNext(universities, startKey)
 
-        print(result)
         res = {}
         i = startIndex
         for hit in result:

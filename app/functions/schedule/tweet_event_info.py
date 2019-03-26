@@ -16,7 +16,6 @@ def tweet_event_info(event, context):
 
         eventTable = EventTable(event)
         events = eventTable.queryForTweet(timeAfterDay)
-        print(events)
 
         twitter = Twitter()
         twitter.tweetEventInfoFromEvents(events)

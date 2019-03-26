@@ -19,7 +19,6 @@ def get_profile(event, context):
             "isAcceptMail": profile.isAcceptMail,
             "universities": profile.universities
         }
-        print(res)
 
         NoneToEmptystrInDict(res)
 

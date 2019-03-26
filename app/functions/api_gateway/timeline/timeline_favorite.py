@@ -23,7 +23,6 @@ def timeline_favorite(event, context):
         listEventId = list(profile.favoriteEvent)
         # 新しい順番から表示させたいので配列を逆にする
         listEventId.reverse()
-        print(listEventId)
 
         startNum, size = createStartNumAndSize(page)
 
