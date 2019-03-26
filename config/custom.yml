@@ -1,0 +1,47 @@
+profileTable:
+  dev: dev-profile
+  prod: profile
+  prod2: profile
+
+eventTable:
+  dev: dev-event
+  prod: event
+  prod2: event
+
+sequenceTable:
+  dev: dev-sequence
+  prod: sequence
+  prod2: sequence
+
+imageBucket:
+  dev: soda-test-image
+  prod: soda-image
+  prod2: soda-image
+
+sns:
+  cancelTopic:
+    dev: dev_cancel_event
+    prod: cancel_event
+    prod2: cancel_event
+  sendWeekMail:
+    dev: dev_send_week_mail
+    prod: send_week_mail
+    prod2: send_week_mail
+
+twitter:
+  consumerKey:
+    dev: h7KEh32IEQEEFWYE5jKTIzEom
+    prod: h7KEh32IEQEEFWYE5jKTIzEom
+    prod2: h7KEh32IEQEEFWYE5jKTIzEom
+  consumerSecret:
+    dev: xfhLFhVFkRCBRrfZUuCh6umV9Upzo5n3sRGfnT57YZQou6Zeev
+    prod: xfhLFhVFkRCBRrfZUuCh6umV9Upzo5n3sRGfnT57YZQou6Zeev
+    prod2: xfhLFhVFkRCBRrfZUuCh6umV9Upzo5n3sRGfnT57YZQou6Zeev
+  accessToken:
+    dev: 994936051050270720-5IZ9RwgAqBmamoVll3xheVMTaEkQeL8
+    prod: 994936051050270720-5IZ9RwgAqBmamoVll3xheVMTaEkQeL8
+    prod2: 994936051050270720-5IZ9RwgAqBmamoVll3xheVMTaEkQeL8
+  accessSecret:
+    dev: KB2LnnpH4PogBg9xE0JcVSvsaLsYxYRes64sY7SH5ZZlq
+    prod: KB2LnnpH4PogBg9xE0JcVSvsaLsYxYRes64sY7SH5ZZlq
+    prod2: KB2LnnpH4PogBg9xE0JcVSvsaLsYxYRes64sY7SH5ZZlq
