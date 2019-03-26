@@ -216,3 +216,8 @@ functions:
     handler: app/functions/sns/send_week_mail.send_week_mail
     timeout: 30
     events: ${file(./config/events.yml):send_week_mail}
+  
+  tweet_event_info:
+    handler: app/functions/schedule/tweet_event_info.tweet_event_info
+    timeout: 30
+    events: ${file(./config/events.yml):tweet_event_info}
