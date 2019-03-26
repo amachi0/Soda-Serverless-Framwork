@@ -36,10 +36,10 @@ MAIL_ADRESS_FROM_SODA: Soda <info@sodaevent.com>
 #お問い合わせからのメールを受け取る際のアドレス
 MAIL_ADRESS_CONTACT: shunsuke.kmkz0617@gmail.com
 
-TWITTER_CONSUMER_KEY: h7KEh32IEQEEFWYE5jKTIzEom
-TWITTER_CONSUMER_SECRET: xfhLFhVFkRCBRrfZUuCh6umV9Upzo5n3sRGfnT57YZQou6Zeev
-ACCESS_TOKEN: 994936051050270720-5IZ9RwgAqBmamoVll3xheVMTaEkQeL8
-ACCESS_SECRET: KB2LnnpH4PogBg9xE0JcVSvsaLsYxYRes64sY7SH5ZZlq
+TWITTER_CONSUMER_KEY: ${self:custom.twitter.consumerKey.${self:provider.stage}}
+TWITTER_CONSUMER_SECRET: ${self:custom.twitter.consumerSecret.${self:provider.stage}}
+ACCESS_TOKEN: ${self:custom.twitter.accessToken.${self:provider.stage}}
+ACCESS_SECRET: ${self:custom.twitter.accessSecret.${self:provider.stage}}
 
 #SlackのWebhook URL
 SLACK_WEB_HOOK_URL: https://hooks.slack.com/services/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
