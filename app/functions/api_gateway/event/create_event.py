@@ -1,5 +1,6 @@
 import json
 import time
+from botocore.exceptions import ClientError
 from app.data.event import Event
 from app.data.source.sequence_table import SequenceTable
 from app.data.source.event_table import EventTable
@@ -25,6 +26,7 @@ from app.util.return_dict import Successed, Failured
 }
 '''
 
+
 def create_event(event, context):
     try:
         param = json.loads(event['body'])
@@ -43,14 +45,14 @@ def create_event(event, context):
         eventTable = EventTable(event)
         eventTable.insert(mEvent)
 
-        #作成したイベントのeventIdをプロフィールテーブルのmyEventに追加
+        # 作成したイベントのeventIdをプロフィールテーブルのmyEventに追加
         addList = [mEvent.eventId]
         profileTable = ProfileTable(event)
         profileTable.addListItemInProfileTable(identityId, "myEvent", addList)
-        
-        res = { "eventId" : mEvent.eventId }
+
+        res = {"eventId": mEvent.eventId}
         return Successed(res)
-    
-    except:
-        import  traceback
+
+    except ClientError:
+        import traceback
         return Failured(traceback.format_exc())

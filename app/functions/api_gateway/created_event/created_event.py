@@ -1,8 +1,10 @@
+from botocore.exceptions import ClientError
 from app.data.source.profile_table import ProfileTable
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
 from app.logic.create_response_from_events import createResponseFromEvents
 from app.logic.create_startnum_and_size import createStartNumAndSize
+
 
 def created_event(event, context):
     try:
@@ -18,15 +20,15 @@ def created_event(event, context):
         myEvents = list(profile.myEvent)
         favoriteEvents = list(profile.favoriteEvent)
 
-        #新しい順番から表示させたいので配列を降順にソートする
+        # 新しい順番から表示させたいので配列を降順にソートする
         myEvents.reverse()
 
         startNum, size = createStartNumAndSize(page)
-        
+
         # 配列長以上の要素を要求されたときはここで処理を終わる
         if(len(myEvents) <= startNum):
             return Successed({})
-        
+
         # 配列の１ページ分を切り取る
         myEventsIdInPage = myEvents[startNum:startNum + size]
 
@@ -38,6 +40,6 @@ def created_event(event, context):
         res = createResponseFromEvents(events, startNum, favoriteEvents)
         return Successed(res)
 
-    except:
-        import  traceback
+    except ClientError:
+        import traceback
         return Failured(traceback.format_exc())

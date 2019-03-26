@@ -1,131 +1,40 @@
 import json
-import boto3
-import os
+from botocore.exceptions import ClientError
+from app.data.source.profile_table import ProfileTable
+from app.data.ses import Ses
+from app.util.return_dict import Successed, Failured
 
-dynamodb = boto3.resource('dynamodb')
-client = boto3.client('dynamodb')
-profile_table_name = os.environ['PROFILE_TABLE']
-table = dynamodb.Table(profile_table_name)
-sesRegion = os.environ['SES_REGION']
-ses = boto3.client('ses', region_name = sesRegion)
-MAILFROM = os.environ['MAIL_ADRESS_FROM_SODA']
-
-def sendmail(to, subject, body):
-    client = boto3.client('ses', region_name = sesRegion)
-    client.send_email(
-        Source = MAILFROM,
-        Destination = {
-            'ToAddresses' : [
-                    to
-                ]
-        },
-        Message = {
-            'Subject' : {
-                'Data' : subject,
-                'Charset' : 'UTF-8'
-            },
-            'Body' : {
-                'Text' : {
-                    'Data' : body,
-                    'Charset' : 'UTF-8'
-                }
-            }
-        }
-    )
 
 def cancel_sns(event, context):
     try:
-        message = event['Records'][0]['Sns']['Message']
-        d = json.loads(message)
-        print(d)
-        eventId = d['eventId']
-        title = d['title']
-        list = d['list']
-        listKey = []
-        for identityId in list:
-            dic = {
-                "identityId" : {
-                    "S" : identityId
-                }
-            }
-            listKey.append(dic)
-            
-            #それぞれのいいねをしていたユーザーのfavoriteEventから中止されたイベントを削除
-            itemProfile = table.get_item(
-                Key = {
-                    'identityId' : identityId
-                }
-            )
-            listEventId = itemProfile['Item']['favoriteEvent']
-            listEventId.remove(eventId)
-            table.update_item(
-                Key = {
-                    'identityId' : identityId
-                },
-                UpdateExpression = 'set favoriteEvent=:x',
-                ExpressionAttributeValues = {
-                    ':x' : listEventId
-                }
-            )
-        
-        res = client.batch_get_item(
-            RequestItems = {
-                profile_table_name : {
-                    'Keys' : listKey
-                }
-            }
-        )
-        
-        for user in res['Responses'][profile_table_name]:
-            if not ("isAcceptMail" in user):
+        message = json.loads(event['Records'][0]['Sns']['Message'])
+        eventId = message['eventId']
+        title = message['title']
+        listFavorite = message['listFavorite']
+
+        profileTable = ProfileTable(event)
+        profiles = profileTable.batchGetFromListIdentityId(listFavorite)
+
+        for identityId in listFavorite:
+            # それぞれのいいねをしていたユーザーのfavoriteEventから中止されたイベントを削除
+            profileTable.deleteListItemInProfileTable(
+                identityId, "favoriteEvent", [eventId])
+
+        for profile in profiles:
+            if not profile.isAcceptMail:
                 continue
-            
-            if not ("email" in user):
-                continue
-            
-            if(user['isAcceptMail']):
-                email = user['email']['S']
-                ses.send_email(
-                    Source = MAILFROM,
-                    Destination = {
-                        'ToAddresses' : [
-                            email
-                        ]
-                    },
-                    Message = {
-                        'Subject' : {
-                            'Data' : 'イベント中止のお知らせ',
-                            'Charset' : 'UTF-8'
-                        },
-                        'Body' : {
-                            'Text' : {
-                                'Data' : title + "が中止されました",
-                                'Charset' : 'UTF-8'
-                            }
-                        }
-                    }
-                )
-        res = {
-            "result" : 1
-        }
-        return {
-            'statusCode' : 200,
-            'headers' : {
-                'content-type' : 'application/json'
-            },
-            'body' : json.dumps(res)
-        }
-    
-    except:
-        import  traceback
-        traceback.print_exc()
-        res = {
-            "result" : 0
-        }
-        return {
-            'statusCode' : 500,
-            'headers' : {
-                'content-type' : 'application/json'
-            },
-            'body' : json.dumps(res)
-        }
+
+            ses = Ses()
+            ses.sendTextmail(profile.email, 'イベント中止のお知らせ',
+                             '立命館大学生のみなさま、こんにちは！\n\n'
+                             'いつもSodaをご利用いただきありがとうございます。\n\n'
+                             '〜イベント中止のお知らせ〜\nイベント 「' + title + '」が中止されました\n\n'
+                             'その他のイベント情報はこちらまで https://sodaevent.com'
+                             )
+
+        res = {"result": 1}
+        return Successed(res)
+
+    except ClientError:
+        import traceback
+        return Failured(traceback.format_exc())

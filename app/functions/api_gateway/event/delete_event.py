@@ -1,15 +1,14 @@
 import json
 import os
-import  traceback
+import traceback
+from botocore.exceptions import ClientError
 from app.data.source.event_table import EventTable
 from app.data.source.profile_table import ProfileTable
+from app.data.sns import Sns
 from app.util.return_dict import Successed, Failured
 
-'''
-sns = boto3.resource('sns')
-topic_name = os.environ['SNS_CANCEL_TOPIC']
-topic = sns.Topic(topic_name)
-'''
+TOPIC_NAME = os.environ['SNS_CANCEL_TOPIC']
+
 
 def delete_event(event, context):
     try:
@@ -18,35 +17,35 @@ def delete_event(event, context):
         identityId = param['identityId']
 
         eventTable = EventTable(event)
-        mEvent = eventTable.getFromEventId(eventId, "identityId")
+        mEvent = eventTable.getFromEventId(
+            eventId, "identityId, favorite, eventName")
 
         if identityId != mEvent.identityId:
             return Failured(traceback.format_exc())
 
         eventTable.delete(eventId)
-        
+
         listItem = [eventId]
 
         profileTable = ProfileTable(event)
-        profileTable.deleteListItemInProfileTable(mEvent.identityId, "myEvent", listItem)
+        profileTable.deleteListItemInProfileTable(
+            mEvent.identityId, "myEvent", listItem)
 
-        ''' キャンセルされたらいいねをしていた人にお知らせを送る
+        if not mEvent.hasfavorite:
+            res = {"result": 1}
+            return Successed(res)
+
         message = {
-            'eventId' : int(event.eventId),
-            'title' : event.eventName
+            'eventId': eventId,
+            'title': mEvent.eventName,
+            'listFavorite': list(mEvent.favorite)
         }
 
-        if("favorite" in itemEvent['Item']):
-            list = itemEvent['Item']['favorite']
-            message['list'] = list
-            messageJson = json.dumps(message)
-            topic.publish(
-                Message = messageJson
-            )
-        '''
+        sns = Sns(TOPIC_NAME)
+        sns.publishFromDictiorary(message)
 
-        res = { "result" : 1 }
+        res = {"result": 1}
         return Successed(res)
-    
-    except:
+
+    except ClientError:
         return Failured(traceback.format_exc())

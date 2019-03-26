@@ -18,26 +18,18 @@ plugins:
 custom:
   defaultStage: dev
   
-  profileTable: 
-    dev: dev-profile
-    prod: profile
-    prod2: profile
+  profileTable: ${file(./config/custom.yml):profileTable}
 
-  eventTable:
-    dev: dev-event
-    prod: event
-    prod2: event
+  eventTable: ${file(./config/custom.yml):eventTable}
   
-  sequenceTable:
-    dev: dev-sequence
-    prod: sequence
-    prod2: sequence
+  sequenceTable: ${file(./config/custom.yml):sequenceTable}
   
-  imageBucket:
-    dev: soda-test-image
-    prod: soda-image
-    prod2: soda-image
+  imageBucket: ${file(./config/custom.yml):imageBucket}
   
+  sns: ${file(./config/custom.yml):sns}
+  
+  twitter: ${file(./config/custom.yml):twitter}
+
   serverless-offline: 
     port: 4000
   
@@ -194,10 +186,20 @@ functions:
   
   edit_finish_event:
     handler: app/functions/schedule/finish_event.finish_event
-    timeout: 3
+    timeout: 30
     events: ${file(./config/events.yml):edit_finish_event}
   
-  send_mail_a_day:
-    handler: app/functions/schedule/send_mail_a_day.send_mail_a_day
-    timeout: 20
-    events: ${file(./config/events.yml):send_mail_a_day}
+  prepare_week_mail:
+    handler: app/functions/schedule/prepare_week_mail.prepare_week_mail
+    timeout: 30
+    events: ${file(./config/events.yml):prepare_week_mail}
+
+  send_week_mail:
+    handler: app/functions/sns/send_week_mail.send_week_mail
+    timeout: 30
+    events: ${file(./config/events.yml):send_week_mail}
+  
+  tweet_event_info:
+    handler: app/functions/schedule/tweet_event_info.tweet_event_info
+    timeout: 30
+    events: ${file(./config/events.yml):tweet_event_info}

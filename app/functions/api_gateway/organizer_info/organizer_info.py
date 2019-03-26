@@ -1,7 +1,9 @@
+from botocore.exceptions import ClientError
 from app.data.source.event_table import EventTable
 from app.data.source.profile_table import ProfileTable
 from app.util.return_dict import Successed, Failured
 from app.util.change_none_and_emptystr import NoneToEmptystrInDict
+
 
 def organizer_info(event, context):
     try:
@@ -10,28 +12,28 @@ def organizer_info(event, context):
         eventTable = EventTable(event)
         mEvent = eventTable.getFromEventId(eventId, 'identityId')
         identityId = mEvent.identityId
-        
+
         profileTable = ProfileTable(event)
         organizer = profileTable.getOrganizerInfo(identityId)
-        
-        info = {  
-            "sodaId" : organizer.sodaId,
-            "name" : organizer.name,
-            "urlData" : organizer.urlData,
-            "profile" : organizer.profile,
-            "twitter" : organizer.twitter,
-            "facebook" : organizer.facebook,
-            "instagram" : organizer.instagram
+
+        info = {
+            "sodaId": organizer.sodaId,
+            "name": organizer.name,
+            "urlData": organizer.urlData,
+            "profile": organizer.profile,
+            "twitter": organizer.twitter,
+            "facebook": organizer.facebook,
+            "instagram": organizer.instagram
         }
 
         NoneToEmptystrInDict(info)
 
         res = {
-            'organizer' : info
+            'organizer': info
         }
 
         return Successed(res)
 
-    except:
-        import  traceback
+    except ClientError:
+        import traceback
         return Failured(traceback.format_exc())

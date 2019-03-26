@@ -1,23 +1,27 @@
 import time
 import decimal
 from botocore.exceptions import ClientError
+from app.data.twitter import Twitter
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
 
+SECOND_OF_ONE_DAY = 86400
 
-def finish_event(event, context):
+
+def tweet_event_info(event, context):
     try:
         now = time.time()
         nowDecimal = decimal.Decimal(str(now))
+        timeAfterDay = nowDecimal + SECOND_OF_ONE_DAY
 
         eventTable = EventTable(event)
-        listEventId = eventTable.getFinishedEventIdList(nowDecimal)
+        events = eventTable.queryForTweet(timeAfterDay)
 
-        if len(listEventId) == 0:
-            return Successed({"result": 1})
+        twitter = Twitter()
+        twitter.tweetEventInfoFromEvents(events)
 
-        eventTable.updateStatuses(listEventId)
-        return Successed({"result": 1})
+        res = {'result': 1}
+        return Successed(res)
 
     except ClientError:
         import traceback
