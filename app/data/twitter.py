@@ -15,12 +15,9 @@ class Twitter():
 
     def tweetEventInfoFromEvents(self, events):
         for event in events:
-            # url = "https://sodaevent.com/event/" + str(event.eventId)
-            url = "https://sodaevent.com/event/28"
-            # eventName = event.eventName
-            eventName = "🌸【watnow】新歓お花見イベント"
-            # location = event.location
-            location = "梅小路公園(集合は京都駅)"
+            url = "https://sodaevent.com/event/" + str(event.eventId)
+            eventName = event.eventName
+            location = event.location
             timeStr = getStrFromStartAndEndInEvent(event)
 
             self.api.update_status(
