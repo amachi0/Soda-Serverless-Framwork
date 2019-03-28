@@ -138,12 +138,8 @@ class ProfileTable(Profile):
                 }
             }
         )
-        profiles = []
-        for profile in res['Responses'][self.tableName]:
-            mProfile = Profile()
-            mProfile.email = profile['email']['S']
-            mProfile.isAcceptMail = profile['isAcceptMail']['BOOL']
-            profiles.append(mProfile)
+
+        profiles = getProfilesFromBatchGetResponse(res, self.tableName)
         return profiles
 
     def scanForWeekMail(self):
