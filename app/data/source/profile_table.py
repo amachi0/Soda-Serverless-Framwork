@@ -2,6 +2,9 @@ import boto3
 import os
 from boto3.dynamodb.conditions import Key, Attr
 from app.data.profile import Profile
+from app.logic.logic_profile_table \
+    import getListKeysForBatchGet, getProfilesFromBatchGetResponse, \
+    getProfilesFromResponse, hasNoItemInResponse
 
 
 class ProfileTable(Profile):
