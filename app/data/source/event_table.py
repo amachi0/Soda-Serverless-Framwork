@@ -198,8 +198,6 @@ class EventTable(Event):
         return events
 
     def queryForWeekMail(self, unixTime):
-        from app.logic.change_start_in_event import changeStartInEvent
-
         res = self.table.query(
             IndexName=self.statusStartIndex,
             KeyConditionExpression=Key('status').eq(
