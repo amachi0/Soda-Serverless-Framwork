@@ -172,9 +172,9 @@ class EventTable(Event):
                 'end').attribute_type("NULL")
         )
 
-        eventIdList = []
-        if itemsNotPrivate["Count"] == 0 and itemsPrivate["Count"] == 0:
-            return eventIdList
+        eventIdList = getEventIdListFromTwoResponse(
+            itemsNotPrivate, itemsPrivate)
+        return eventIdList
 
         for event in itemsNotPrivate['Items']:
             eventIdList.append(event['eventId'])
