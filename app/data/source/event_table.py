@@ -209,14 +209,9 @@ class EventTable(Event):
             ProjectionExpression='eventName, eventId, \
                 #start, #location, countOfLike'
         )
-        events = []
-        items = res['Items']
-        for event in items:
-            mEvent = Event(**event)
-            changeStartInEvent(mEvent)
-            events.append(mEvent)
-        events.sort(key=lambda x: x.countOfLike, reverse=True)
-        return events[:20]
+
+        events = getEventsForWeekMailFromResponse(res)
+        return events
 
     def queryForTweet(self, unixTime):
         res = self.table.query(
