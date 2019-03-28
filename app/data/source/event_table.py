@@ -225,11 +225,8 @@ class EventTable(Event):
             },
             ProjectionExpression='eventName, eventId, #start, #end, #location'
         )
-        items = res['Items']
-        events = []
-        for event in items:
-            mEvent = Event(**event)
-            events.append(mEvent)
+
+        events = getEventsFromResponse(res)
         return events
 
     def delete(self, eventId):
