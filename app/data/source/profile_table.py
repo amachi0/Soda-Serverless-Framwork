@@ -143,7 +143,7 @@ class ProfileTable(Profile):
         return profiles
 
     def scanForWeekMail(self):
-        response = self.table.scan(
+        res = self.table.scan(
             FilterExpression=Attr('isAcceptMail').eq(True),
             ProjectionExpression='email'
         )
@@ -157,7 +157,7 @@ class ProfileTable(Profile):
         return profiles
 
     def isValidEmail(self, email):
-        itemList = self.table.query(
+        res = self.table.query(
             IndexName=self.checkEmailIndex,
             KeyConditionExpression=Key('email').eq(email)
         )
