@@ -166,7 +166,7 @@ class ProfileTable(Profile):
         return hasItem
 
     def isValidSodaId(self, sodaId):
-        itemList = self.table.query(
+        res = self.table.query(
             IndexName=self.checkSodaIdIndex,
             KeyConditionExpression=Key('sodaId').eq(sodaId)
         )
