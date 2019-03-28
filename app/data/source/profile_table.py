@@ -147,15 +147,13 @@ class ProfileTable(Profile):
             FilterExpression=Attr('isAcceptMail').eq(True),
             ProjectionExpression='email'
         )
-        items = response['Items']
-        while 'LastEvaluatedKey' in response:
-            response = self.table.scan(
-                ExclusiveStartKey=response['LastEvaluatedKey'])
-            items.extend(response['Items'])
-        profiles = []
-        for profile in items:
-            mProfile = Profile(**profile)
-            profiles.append(mProfile)
+        items = res['Items']
+        while 'LastEvaluatedKey' in res:
+            res = self.table.scan(
+                ExclusiveStartKey=res['LastEvaluatedKey'])
+            items.extend(res['Items'])
+
+        profiles = getProfilesFromResponse(items)
         return profiles
 
     def isValidEmail(self, email):
