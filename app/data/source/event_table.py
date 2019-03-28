@@ -2,6 +2,10 @@ import boto3
 import os
 from boto3.dynamodb.conditions import Key, Attr
 from app.data.event import Event
+from app.logic.logic_event_table \
+    import getEventIdListFromTwoResponse, getListKeysForBatchGet, \
+    getEventsFromBatchGetResponse, getEventsForWeekMailFromResponse, \
+    getEventsFromResponse
 
 
 class EventTable(Event):
