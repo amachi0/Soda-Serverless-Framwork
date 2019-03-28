@@ -115,6 +115,7 @@ class ProfileTable(Profile):
                 '#attributeName': 'name'
             }
         )
+
         param = item['Item']
         profile = Profile(**param)
         return profile
@@ -126,6 +127,7 @@ class ProfileTable(Profile):
             },
             ProjectionExpression=projectionExpression
         )
+
         param = item['Item']
         profile = Profile(**param)
         return profile
