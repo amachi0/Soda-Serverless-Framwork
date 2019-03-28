@@ -161,17 +161,15 @@ class ProfileTable(Profile):
             IndexName=self.checkEmailIndex,
             KeyConditionExpression=Key('email').eq(email)
         )
-        if (itemList['Count'] == 0):
-            return True
-        else:
-            return False
+
+        hasItem = hasNoItemInResponse(res)
+        return hasItem
 
     def isValidSodaId(self, sodaId):
         itemList = self.table.query(
             IndexName=self.checkSodaIdIndex,
             KeyConditionExpression=Key('sodaId').eq(sodaId)
         )
-        if (itemList['Count'] == 0):
-            return True
-        else:
-            return False
+
+        hasItem = hasNoItemInResponse(res)
+        return hasItem
