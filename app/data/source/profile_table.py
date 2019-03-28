@@ -133,7 +133,7 @@ class ProfileTable(Profile):
         res = self.client.batch_get_item(
             RequestItems={
                 self.tableName: {
-                    'Keys': listKey,
+                    'Keys': listKeys,
                     'ProjectionExpression': 'email, isAcceptMail'
                 }
             }
