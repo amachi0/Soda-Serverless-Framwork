@@ -1,6 +1,6 @@
 import tweepy
 import os
-from app.logic.change_start_in_event import getStrFromStartAndEndInEvent
+from app.util.change_unix_to_datetime import getStrFromStartAndEndInEvent
 
 
 class Twitter():
