@@ -193,22 +193,8 @@ class EventTable(Event):
                 }
             }
         )
-        events = []
-        for event in res['Responses'][self.tableName]:
-            myEvent = Event()
-            myEvent.eventId = int(event['eventId']['N'])
-            myEvent.eventName = event['eventName']['S']
-            myEvent.updateTime = int(event['updateTime']['N'])
-            myEvent.start = int(event['start']['N'])
-            if('N' in event['end']):
-                myEvent.end = int(event['end']['N'])
-            else:
-                myEvent.end = None
-            myEvent.location = event['location']['S']
-            myEvent.urlData = event['urlData']['S']
-            myEvent.university = event['university']['S']
-            myEvent.countOfLike = int(event['countOfLike']['N'])
-            events.append(myEvent)
+
+        events = getEventsFromBatchGetResponse(res, self.tableName)
         return events
 
     def queryForWeekMail(self, unixTime):
