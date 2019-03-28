@@ -143,6 +143,7 @@ class EventTable(Event):
                 countOfLike, detail, #a, eventName, #b, price, qualification, \
                 #c, university, updateTime, urlData, #d, sponsor, entry"
         )
+
         item = item['Item']
         event = Event(**item)
         event.createIsPrivateFromStatus()
@@ -155,6 +156,7 @@ class EventTable(Event):
             },
             ProjectionExpression=projectionExpression
         )
+
         item = item['Item']
         event = Event(**item)
         return event
