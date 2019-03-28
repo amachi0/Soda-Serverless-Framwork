@@ -176,23 +176,9 @@ class EventTable(Event):
             itemsNotPrivate, itemsPrivate)
         return eventIdList
 
-        for event in itemsNotPrivate['Items']:
-            eventIdList.append(event['eventId'])
-
-        for event in itemsPrivate['Items']:
-            eventIdList.append(event['eventId'])
-
-        return eventIdList
-
     def batchGetFromListEventId(self, listEventId):
-        listKeys = []
-        for eventId in listEventId:
-            dic = {
-                "eventId": {
-                    "N": str(eventId)
-                }
-            }
-            listKeys.append(dic)
+        listKeys = getListKeysForBatchGet(listEventId)
+
         res = self.client.batch_get_item(
             RequestItems={
                 self.tableName: {
