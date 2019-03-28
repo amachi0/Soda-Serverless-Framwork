@@ -128,14 +128,7 @@ class ProfileTable(Profile):
         return profile
 
     def batchGetFromListIdentityId(self, listIdentityId):
-        listKey = []
-        for identityId in listIdentityId:
-            dic = {
-                "identityId": {
-                    "S": identityId
-                }
-            }
-            listKey.append(dic)
+        listKeys = getListKeysForBatchGet(listIdentityId)
 
         res = self.client.batch_get_item(
             RequestItems={
