@@ -58,4 +58,3 @@ workflows:
         filters:
           branches:
             only: develop
-
