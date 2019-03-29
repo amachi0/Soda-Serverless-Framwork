@@ -50,7 +50,12 @@ jobs:
               echo "Not develop branch so not deploying"
             fi
 
-general:
-  branches:
-    only:
-      - develop
+workflows:
+  version: 2
+  workflow1:
+    jobs:
+      - build:
+        filters:
+          branches:
+            only: develop
+
