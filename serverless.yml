@@ -42,6 +42,8 @@ package:
   exclude:
     - .vscode/**
     - node_modules/**
+    - test
+    - .circleci/**
 
 resources:
   - ${file(./config/cfn/event_table.yml)}
