@@ -33,6 +33,11 @@ jobs:
             - node_modules
           key: dependencies-node-{{ checksum "package.json" }}
 
+      - run:
+          name: sls plugin install
+          command:
+            sls plugin install -n serverless-python-requirements
+
       # run tests
       - run:
           name: Run tests
@@ -44,8 +49,8 @@ jobs:
           name: Deploy application
           command: |
             if [ "${CIRCLE_BRANCH}" == "develop" ]; then
-              sls config credentials -k ${AWS_ACCESS_KEY} -s ${AWS_SECRET_KEY} -p aws
-              sls deploy -r ap-northeast-1 -s dev
+              sls config credentials --provider aws --key ${AWS_ACCESS_KEY} --secret ${AWS_SECRET_KEY}
+              sls deploy -r ap-northeast-1
             else
               echo "Not develop branch so not deploying"
             fi

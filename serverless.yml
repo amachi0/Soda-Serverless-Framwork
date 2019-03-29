@@ -36,7 +36,7 @@ custom:
   dynamodb:  ${file(./config/plugins/dynamodb-local.yml)}
 
   pythonRequirements:
-    dockerizePip: true
+    dockerizePip: 'non-linux'
 
 package:
   exclude:
