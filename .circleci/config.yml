@@ -1,0 +1,56 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/Soda
+
+    docker:
+      # specify the version you desire here
+      - image: circleci/python:3.6.1-node
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - dependencies-node-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - dependencies-node
+
+      # this is slow. build a custom docker image and use that
+      - run:
+          name: Install node and npm
+          command: node --version && npm -v
+
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: dependencies-node-{{ checksum "package.json" }}
+
+      # run tests
+      - run:
+          name: Run tests
+          command: python -m unittest discover test
+            
+
+      # deploy app
+      - run:
+          name: Deploy application
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              sls config credentials -k ${AWS_ACCESS_KEY} -s ${AWS_SECRET_KEY} -p aws
+              sls deploy -r ap-northeast-1
+            else
+              echo "Not develop branch so not deploying"
+            fi
+
+general:
+  branches:
+    only:
+      - develop
