@@ -14,7 +14,8 @@ def changeStartInEvent(event=Event):
     strWeekDay = dayOfTheWeek[weekday]
 
     date = str(month) + '/' + str(date) + strWeekDay
-    event.start = date
+
+    return date
 
 
 def getStrFromStartAndEndInEvent(event=Event):

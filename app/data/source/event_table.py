@@ -2,6 +2,10 @@ import boto3
 import os
 from boto3.dynamodb.conditions import Key, Attr
 from app.data.event import Event
+from app.logic.logic_event_table \
+    import getEventIdListFromTwoResponse, getListKeysForBatchGet, \
+    getEventsFromBatchGetResponse, getEventsForWeekMailFromResponse, \
+    getEventsFromResponse
 
 
 class EventTable(Event):
@@ -139,6 +143,7 @@ class EventTable(Event):
                 countOfLike, detail, #a, eventName, #b, price, qualification, \
                 #c, university, updateTime, urlData, #d, sponsor, entry"
         )
+
         item = item['Item']
         event = Event(**item)
         event.createIsPrivateFromStatus()
@@ -151,6 +156,7 @@ class EventTable(Event):
             },
             ProjectionExpression=projectionExpression
         )
+
         item = item['Item']
         event = Event(**item)
         return event
@@ -172,27 +178,13 @@ class EventTable(Event):
                 'end').attribute_type("NULL")
         )
 
-        eventIdList = []
-        if itemsNotPrivate["Count"] == 0 and itemsPrivate["Count"] == 0:
-            return eventIdList
-
-        for event in itemsNotPrivate['Items']:
-            eventIdList.append(event['eventId'])
-
-        for event in itemsPrivate['Items']:
-            eventIdList.append(event['eventId'])
-
+        eventIdList = getEventIdListFromTwoResponse(
+            itemsNotPrivate, itemsPrivate)
         return eventIdList
 
     def batchGetFromListEventId(self, listEventId):
-        listKeys = []
-        for eventId in listEventId:
-            dic = {
-                "eventId": {
-                    "N": str(eventId)
-                }
-            }
-            listKeys.append(dic)
+        listKeys = getListKeysForBatchGet(listEventId)
+
         res = self.client.batch_get_item(
             RequestItems={
                 self.tableName: {
@@ -207,27 +199,11 @@ class EventTable(Event):
                 }
             }
         )
-        events = []
-        for event in res['Responses'][self.tableName]:
-            myEvent = Event()
-            myEvent.eventId = int(event['eventId']['N'])
-            myEvent.eventName = event['eventName']['S']
-            myEvent.updateTime = int(event['updateTime']['N'])
-            myEvent.start = int(event['start']['N'])
-            if('N' in event['end']):
-                myEvent.end = int(event['end']['N'])
-            else:
-                myEvent.end = None
-            myEvent.location = event['location']['S']
-            myEvent.urlData = event['urlData']['S']
-            myEvent.university = event['university']['S']
-            myEvent.countOfLike = int(event['countOfLike']['N'])
-            events.append(myEvent)
+
+        events = getEventsFromBatchGetResponse(res, self.tableName)
         return events
 
     def queryForWeekMail(self, unixTime):
-        from app.logic.change_start_in_event import changeStartInEvent
-
         res = self.table.query(
             IndexName=self.statusStartIndex,
             KeyConditionExpression=Key('status').eq(
@@ -239,14 +215,9 @@ class EventTable(Event):
             ProjectionExpression='eventName, eventId, \
                 #start, #location, countOfLike'
         )
-        events = []
-        items = res['Items']
-        for event in items:
-            mEvent = Event(**event)
-            changeStartInEvent(mEvent)
-            events.append(mEvent)
-        events.sort(key=lambda x: x.countOfLike, reverse=True)
-        return events[:20]
+
+        events = getEventsForWeekMailFromResponse(res)
+        return events
 
     def queryForTweet(self, unixTime):
         res = self.table.query(
@@ -260,11 +231,8 @@ class EventTable(Event):
             },
             ProjectionExpression='eventName, eventId, #start, #end, #location'
         )
-        items = res['Items']
-        events = []
-        for event in items:
-            mEvent = Event(**event)
-            events.append(mEvent)
+
+        events = getEventsFromResponse(res)
         return events
 
     def delete(self, eventId):

@@ -2,8 +2,8 @@ from botocore.exceptions import ClientError
 from app.data.source.profile_table import ProfileTable
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
-from app.logic.create_startnum_and_size import createStartNumAndSize
-from app.logic.create_response_from_events import createResponseFromEvents
+from app.logic.logic_timeline \
+    import createStartNumAndSize, createResponseFromEvents
 
 
 def timeline_favorite(event, context):

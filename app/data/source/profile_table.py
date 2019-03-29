@@ -2,6 +2,9 @@ import boto3
 import os
 from boto3.dynamodb.conditions import Key, Attr
 from app.data.profile import Profile
+from app.logic.logic_profile_table \
+    import getListKeysForBatchGetProfile, getProfilesFromBatchGetResponse, \
+    getProfilesFromResponse, hasNoItemInResponse
 
 
 class ProfileTable(Profile):
@@ -112,6 +115,7 @@ class ProfileTable(Profile):
                 '#attributeName': 'name'
             }
         )
+
         param = item['Item']
         profile = Profile(**param)
         return profile
@@ -123,68 +127,54 @@ class ProfileTable(Profile):
             },
             ProjectionExpression=projectionExpression
         )
+
         param = item['Item']
         profile = Profile(**param)
         return profile
 
     def batchGetFromListIdentityId(self, listIdentityId):
-        listKey = []
-        for identityId in listIdentityId:
-            dic = {
-                "identityId": {
-                    "S": identityId
-                }
-            }
-            listKey.append(dic)
+        listKeys = getListKeysForBatchGetProfile(listIdentityId)
 
         res = self.client.batch_get_item(
             RequestItems={
                 self.tableName: {
-                    'Keys': listKey,
+                    'Keys': listKeys,
                     'ProjectionExpression': 'email, isAcceptMail'
                 }
             }
         )
-        profiles = []
-        for profile in res['Responses'][self.tableName]:
-            mProfile = Profile()
-            mProfile.email = profile['email']['S']
-            mProfile.isAcceptMail = profile['isAcceptMail']['BOOL']
-            profiles.append(mProfile)
+
+        profiles = getProfilesFromBatchGetResponse(res, self.tableName)
         return profiles
 
     def scanForWeekMail(self):
-        response = self.table.scan(
+        res = self.table.scan(
             FilterExpression=Attr('isAcceptMail').eq(True),
             ProjectionExpression='email'
         )
-        items = response['Items']
-        while 'LastEvaluatedKey' in response:
-            response = self.table.scan(
-                ExclusiveStartKey=response['LastEvaluatedKey'])
-            items.extend(response['Items'])
-        profiles = []
-        for profile in items:
-            mProfile = Profile(**profile)
-            profiles.append(mProfile)
+        items = res['Items']
+        while 'LastEvaluatedKey' in res:
+            res = self.table.scan(
+                ExclusiveStartKey=res['LastEvaluatedKey'])
+            items.extend(res['Items'])
+
+        profiles = getProfilesFromResponse(items)
         return profiles
 
     def isValidEmail(self, email):
-        itemList = self.table.query(
+        res = self.table.query(
             IndexName=self.checkEmailIndex,
             KeyConditionExpression=Key('email').eq(email)
         )
-        if (itemList['Count'] == 0):
-            return True
-        else:
-            return False
+
+        hasItem = hasNoItemInResponse(res)
+        return hasItem
 
     def isValidSodaId(self, sodaId):
-        itemList = self.table.query(
+        res = self.table.query(
             IndexName=self.checkSodaIdIndex,
             KeyConditionExpression=Key('sodaId').eq(sodaId)
         )
-        if (itemList['Count'] == 0):
-            return True
-        else:
-            return False
+
+        hasItem = hasNoItemInResponse(res)
+        return hasItem
