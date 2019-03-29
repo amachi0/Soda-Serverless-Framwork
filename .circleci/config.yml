@@ -5,7 +5,7 @@ jobs:
 
     docker:
       # specify the version you desire here
-      - image: circleci/python:3.6.1-node
+      - image: circleci/python:3.6-node
 
     steps:
       - checkout
