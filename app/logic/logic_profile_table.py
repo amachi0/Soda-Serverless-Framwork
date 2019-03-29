@@ -1,7 +1,7 @@
 from app.data.profile import Profile
 
 
-def getListKeysForBatchGet(self, listIdentityId):
+def getListKeysForBatchGetProfile(listIdentityId):
     listKeys = []
     for identityId in listIdentityId:
         dic = {

@@ -3,7 +3,7 @@ import os
 from boto3.dynamodb.conditions import Key, Attr
 from app.data.profile import Profile
 from app.logic.logic_profile_table \
-    import getListKeysForBatchGet, getProfilesFromBatchGetResponse, \
+    import getListKeysForBatchGetProfile, getProfilesFromBatchGetResponse, \
     getProfilesFromResponse, hasNoItemInResponse
 
 
@@ -133,7 +133,7 @@ class ProfileTable(Profile):
         return profile
 
     def batchGetFromListIdentityId(self, listIdentityId):
-        listKeys = getListKeysForBatchGet(listIdentityId)
+        listKeys = getListKeysForBatchGetProfile(listIdentityId)
 
         res = self.client.batch_get_item(
             RequestItems={
