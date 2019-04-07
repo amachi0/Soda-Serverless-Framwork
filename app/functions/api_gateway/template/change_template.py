@@ -1,7 +1,6 @@
 import json
 import boto3
 import os
-from botocore.exceptions import ClientError
 
 dynamodb = boto3.resource('dynamodb')
 profileTableName = os.environ['PROFILE_TABLE']
@@ -64,7 +63,7 @@ def change_template(event, context):
             'body': json.dumps(res)
         }
 
-    except ClientError:
+    except Exception:
         import traceback
         traceback.print_exc()
         res_error = {

@@ -1,5 +1,4 @@
 import json
-from botocore.exceptions import ClientError
 from app.util.return_dict import Successed, Failured
 from app.util.change_none_and_emptystr import emptystrToNoneInDict
 from app.data.profile import Profile
@@ -36,6 +35,6 @@ def change_profile(event, context):
         }
         return Successed(returnBody)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

@@ -1,7 +1,6 @@
 import os
 import time
 import decimal
-from botocore.exceptions import ClientError
 from app.data.source.profile_table import ProfileTable
 from app.data.source.event_table import EventTable
 from app.data.sns import Sns
@@ -38,6 +37,6 @@ def prepare_week_mail(event, context):
         res = {'result': 1}
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

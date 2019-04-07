@@ -1,6 +1,5 @@
 import json
 import time
-from botocore.exceptions import ClientError
 from app.data.event import Event
 from app.data.source.sequence_table import SequenceTable
 from app.data.source.event_table import EventTable
@@ -53,6 +52,6 @@ def create_event(event, context):
         res = {"eventId": mEvent.eventId}
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

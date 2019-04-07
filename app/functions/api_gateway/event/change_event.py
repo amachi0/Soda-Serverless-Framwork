@@ -2,7 +2,6 @@ import json
 from app.data.event import Event
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
-from botocore.exceptions import ClientError
 
 ''' パラメーター
 {
@@ -36,6 +35,6 @@ def change_event(event, context):
         res = {"eventId": eventId}
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())
