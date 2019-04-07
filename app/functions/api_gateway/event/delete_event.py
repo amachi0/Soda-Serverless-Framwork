@@ -1,7 +1,6 @@
 import json
 import os
 import traceback
-from botocore.exceptions import ClientError
 from app.data.source.event_table import EventTable
 from app.data.source.profile_table import ProfileTable
 from app.data.sns import Sns
@@ -47,5 +46,5 @@ def delete_event(event, context):
         res = {"result": 1}
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         return Failured(traceback.format_exc())

@@ -1,5 +1,4 @@
 import json
-from botocore.exceptions import ClientError
 from app.data.ses import Ses
 from app.util.return_dict import Failured
 
@@ -21,6 +20,6 @@ def send_week_mail(event, context):
         for email in listEmail:
             ses.sendMailTemplate(email, json.dumps(data))
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

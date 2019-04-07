@@ -1,5 +1,4 @@
 import json
-from botocore.exceptions import ClientError
 from app.data.source.profile_table import ProfileTable
 from app.data.ses import Ses
 from app.util.return_dict import Successed, Failured
@@ -35,6 +34,6 @@ def cancel_sns(event, context):
         res = {"result": 1}
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

@@ -1,5 +1,4 @@
 import json
-from botocore.exceptions import ClientError
 from app.util.return_dict import Successed, Failured
 from app.data.profile import Profile
 from app.data.source.profile_table import ProfileTable
@@ -37,6 +36,6 @@ def create_user(event, context):
         }
         return Successed(returnBody)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

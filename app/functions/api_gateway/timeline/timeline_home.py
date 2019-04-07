@@ -1,6 +1,5 @@
 import boto3
 import os
-from botocore.exceptions import ClientError
 from app.util.return_dict import Successed, Failured
 from app.data.model_timeline import Query
 
@@ -95,6 +94,6 @@ def timeline_home(event, context):
 
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

@@ -1,6 +1,5 @@
 import time
 import decimal
-from botocore.exceptions import ClientError
 from app.data.twitter import Twitter
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
@@ -23,6 +22,6 @@ def tweet_event_info(event, context):
         res = {'result': 1}
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())
