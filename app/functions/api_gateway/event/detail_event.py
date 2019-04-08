@@ -1,4 +1,3 @@
-from botocore.exceptions import ClientError
 from app.data.source.profile_table import ProfileTable
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
@@ -49,6 +48,6 @@ def detail_event(event, context):
 
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

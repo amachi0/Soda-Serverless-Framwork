@@ -1,4 +1,3 @@
-from botocore.exceptions import ClientError
 from app.util.return_dict import Successed, Failured
 from app.util.change_none_and_emptystr import NoneToEmptystrInDict
 from app.data.source.profile_table import ProfileTable
@@ -24,6 +23,6 @@ def get_profile(event, context):
 
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

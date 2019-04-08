@@ -1,7 +1,6 @@
 import json
 import boto3
 import os
-from botocore.exceptions import ClientError
 
 MAILFROM = os.environ['MAIL_ADRESS_CONTACT']
 sesRegion = os.environ['SES_REGION']
@@ -56,7 +55,7 @@ def contact(event, context):
             'body': json.dumps(res)
         }
 
-    except ClientError:
+    except Exception:
         import traceback
         traceback.print_exc()
         res_error = {

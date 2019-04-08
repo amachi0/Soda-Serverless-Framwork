@@ -1,6 +1,5 @@
 import time
 import decimal
-from botocore.exceptions import ClientError
 from app.data.source.event_table import EventTable
 from app.util.return_dict import Successed, Failured
 
@@ -19,6 +18,6 @@ def finish_event(event, context):
         eventTable.updateStatuses(listEventId)
         return Successed({"result": 1})
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())

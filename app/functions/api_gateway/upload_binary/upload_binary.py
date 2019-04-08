@@ -1,4 +1,3 @@
-from botocore.exceptions import ClientError
 from app.data.source.s3 import S3
 from app.util.return_dict import Successed, Failured
 
@@ -12,6 +11,6 @@ def upload_binary(event, context):
 
         return Successed(res)
 
-    except ClientError:
+    except Exception:
         import traceback
         return Failured(traceback.format_exc())
