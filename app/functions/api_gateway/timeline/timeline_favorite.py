@@ -22,16 +22,16 @@ def timeline_favorite(event, context):
         listEventId = list(profile.favoriteEvent)
         intListEventId = [int(x) for x in listEventId]
         # 新しい順番から表示させたいので配列を逆にする
-        intListEventId.reverse()
+        sortedList = sorted(intListEventId, reverse=True)
 
         startNum, size = createStartNumAndSize(page)
 
         # 配列長以上の要素を要求されたときはここで処理を終わる
         # 配列の１ページ分を切り取る
-        if(len(intListEventId) <= startNum):
+        if(len(sortedList) <= startNum):
             return Successed({})
 
-        listEventIdInPage = intListEventId[startNum:startNum + size]
+        listEventIdInPage = sortedList[startNum:startNum + size]
 
         eventTable = EventTable(event)
         events = eventTable.batchGetFromListEventId(listEventIdInPage)

@@ -21,16 +21,16 @@ def created_event(event, context):
         favoriteEvents = list(profile.favoriteEvent)
 
         # 新しい順番から表示させたいので配列を降順にソートする
-        intMyEvent.reverse()
+        sortedList = sorted(intMyEvent, reverse=True)
 
         startNum, size = createStartNumAndSize(page)
 
         # 配列長以上の要素を要求されたときはここで処理を終わる
-        if(len(intMyEvent) <= startNum):
+        if(len(sortedList) <= startNum):
             return Successed({})
 
         # 配列の１ページ分を切り取る
-        myEventsIdInPage = intMyEvent[startNum:startNum + size]
+        myEventsIdInPage = sortedList[startNum:startNum + size]
 
         eventTable = EventTable(event)
         events = eventTable.batchGetFromListEventId(myEventsIdInPage)
