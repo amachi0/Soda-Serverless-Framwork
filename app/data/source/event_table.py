@@ -229,7 +229,8 @@ class EventTable(Event):
                 '#end': 'end',
                 '#location': 'location'
             },
-            ProjectionExpression='eventName, eventId, #start, #end, #location'
+            ProjectionExpression='eventName, eventId, \
+                #start, #end, #location, university'
         )
 
         events = getEventsFromResponse(res)

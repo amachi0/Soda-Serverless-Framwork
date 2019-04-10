@@ -18,9 +18,11 @@ class Twitter():
             url = "https://sodaevent.com/event/" + str(event.eventId)
             eventName = event.eventName
             location = event.location
+            university = event.university
             timeStr = getStrFromStartAndEndInEvent(event)
 
             self.api.update_status(
                 status="本日のイベント | " + eventName + "  場所："
-                + location + "  時間：" + timeStr + " " + url
+                + location + "  時間：" + timeStr + "\n#Soda  #"
+                + university + " " + url
             )
