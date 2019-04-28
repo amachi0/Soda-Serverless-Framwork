@@ -144,6 +144,9 @@ class EventTable(Event):
                 #c, university, updateTime, urlData, #d, sponsor, entry"
         )
 
+        if 'Item' not in item:
+            return None
+
         item = item['Item']
         event = Event(**item)
         event.createIsPrivateFromStatus()
