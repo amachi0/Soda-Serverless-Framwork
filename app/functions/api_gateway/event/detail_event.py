@@ -20,6 +20,10 @@ def detail_event(event, context):
         eventTable = EventTable(event)
         event = eventTable.getForEventDetail(eventId)
 
+        if event is None:
+            res = {"result": 0}
+            return Successed(res)
+
         isFavorite = False
         if(event.eventId in listFavorite):
             isFavorite = True
