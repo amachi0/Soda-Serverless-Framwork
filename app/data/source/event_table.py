@@ -161,10 +161,6 @@ class EventTable(Event):
         )
 
         item = item['Item']
-
-        if 'Item' not in item:
-            return None
-
         event = Event(**item)
         return event
 

@@ -46,9 +46,9 @@ package:
     - .circleci/**
 
 resources:
-  - ${file(./config/cfn/event_table.yml)}
-  - ${file(./config/cfn/profile_table.yml)}
-  - ${file(./config/cfn/sequence_table.yml)}
+  # - ${file(./config/cfn/event_table.yml)}
+  # - ${file(./config/cfn/profile_table.yml)}
+  # - ${file(./config/cfn/sequence_table.yml)}
 
 functions:
   get_event:

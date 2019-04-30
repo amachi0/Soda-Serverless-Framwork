@@ -11,10 +11,6 @@ def organizer_info(event, context):
         eventTable = EventTable(event)
         mEvent = eventTable.getFromEventId(eventId, 'identityId')
 
-        if mEvent is None:
-            res = {"result": 0}
-            return Successed(res)
-
         identityId = mEvent.identityId
 
         profileTable = ProfileTable(event)
