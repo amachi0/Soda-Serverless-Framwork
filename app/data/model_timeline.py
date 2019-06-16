@@ -17,11 +17,17 @@ class Query:
         else:
             self.isIndexForward = False
 
+        if(self.indexName == os.environ['EVENT_STATUS_UPDATETIME_INDEX']):
+            self.keyConditionExpression = Key('indexKey').eq(1)
+        else:
+            self.keyConditionExpression = Key('status').eq('0_false')
+
     def queryFirstNoUniversity(self):
         result = []
+        print(self.indexName)
         response = self.eventTable.query(
             IndexName=self.indexName,
-            KeyConditionExpression=Key('status').eq('0_false'),
+            KeyConditionExpression=self.keyConditionExpression,
             ScanIndexForward=self.isIndexForward,
             Limit=3
         )
@@ -33,7 +39,7 @@ class Query:
         result = []
         response = self.eventTable.query(
             IndexName=self.indexName,
-            KeyConditionExpression=Key('status').eq('0_false'),
+            KeyConditionExpression=self.keyConditionExpression,
             ExclusiveStartKey=startKey,
             ScanIndexForward=self.isIndexForward,
             Limit=5
@@ -46,11 +52,12 @@ class Query:
         result = []
         response = self.eventTable.query(
             IndexName=self.indexName,
-            KeyConditionExpression=Key('status').eq('0_false'),
+            KeyConditionExpression=self.keyConditionExpression,
             FilterExpression=Attr('university').is_in(universities),
             ScanIndexForward=self.isIndexForward,
             Limit=3
         )
+        print(response)
         result.extend(response['Items'])
 
         while len(result) < 3:
@@ -61,7 +68,7 @@ class Query:
 
             response = self.eventTable.query(
                 IndexName=self.indexName,
-                KeyConditionExpression=Key('status').eq('0_false'),
+                KeyConditionExpression=self.keyConditionExpression,
                 FilterExpression=Attr('university').is_in(universities),
                 ExclusiveStartKey=startKey,
                 ScanIndexForward=self.isIndexForward,
@@ -78,7 +85,7 @@ class Query:
         result = []
         response = self.eventTable.query(
             IndexName=self.indexName,
-            KeyConditionExpression=Key('status').eq('0_false'),
+            KeyConditionExpression=self.keyConditionExpression,
             FilterExpression=Attr('university').is_in(universities),
             ExclusiveStartKey=startKey,
             ScanIndexForward=self.isIndexForward,
@@ -90,7 +97,7 @@ class Query:
             startKey = response['LastEvaluatedKey']
             response = self.eventTable.query(
                 IndexName=self.indexName,
-                KeyConditionExpression=Key('status').eq('0_false'),
+                KeyConditionExpression=self.keyConditionExpression,
                 FilterExpression=Attr('university').is_in(universities),
                 ExclusiveStartKey=startKey,
                 ScanIndexForward=self.isIndexForward,

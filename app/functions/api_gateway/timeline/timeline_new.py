@@ -52,7 +52,7 @@ def timeline_new(event, context):
             startKey = {
                 "eventId": int(lastEventId),
                 "updateTime": int(lastUpdateTime),
-                "status": "0_false"
+                "indexKey": 1
             }
             model = Query(statusUpdateTimeIndex)
             result = model.queryNextNoUniversity(startKey)
@@ -63,7 +63,7 @@ def timeline_new(event, context):
             startKey = {
                 "eventId": int(lastEventId),
                 "updateTime": int(lastUpdateTime),
-                "status": "0_false"
+                "indexKey": 1
             }
             model = Query(statusUpdateTimeIndex)
             result = model.queryNext(universities, startKey)
