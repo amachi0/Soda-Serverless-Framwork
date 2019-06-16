@@ -44,7 +44,8 @@ class EventTable(Event):
                 'updateTime': event.updateTime,
                 'sponsor': event.sponsor,
                 'entry': event.entry,
-                'countOfLike': 0
+                'countOfLike': 0,
+                'indexKey': 1
             },
             ConditionExpression="attribute_not_exists(eventId)"
         )

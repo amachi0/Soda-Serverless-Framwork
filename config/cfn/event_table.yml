@@ -20,6 +20,9 @@ Resources:
         -
           AttributeName: status
           AttributeType: S
+        -
+          AttributeName: indexKey
+          AttributeType: N
 
       KeySchema:
         -
@@ -72,10 +75,10 @@ Resources:
               - university
 
         -
-          IndexName: status-updateTime-index
+          IndexName: indexKey-updateTime-index
           KeySchema:
             -
-              AttributeName: status
+              AttributeName: indexKey
               KeyType: HASH
             -
               AttributeName: updateTime
