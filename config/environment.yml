@@ -14,7 +14,7 @@ PROFILE_SODA_ID_INDEX: sodaId-index
 #イベントテーブルのインデックス
 EVENT_STATUS_START_INDEX: status-start-index
 EVENT_STATUS_COUNTOFLIKE_INDEX: status-countOfLike-index
-EVENT_STATUS_UPDATETIME_INDEX: status-updateTime-index
+EVENT_STATUS_UPDATETIME_INDEX: indexKey-updateTime-index
 
 #S3のバケット名
 S3_JSON_BUCKET: soda-json
