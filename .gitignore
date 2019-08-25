@@ -22,3 +22,5 @@ node_modules
 .vscode
 .dynamodb
 __pycache__
+/cover/
+/.coverage
