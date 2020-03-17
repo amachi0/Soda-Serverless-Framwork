@@ -39,7 +39,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_check_email_invalid(self):
-        dynamodb = boto3.resource('dynamodb')
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -100,7 +100,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_check_sodaId_invalid(self):
-        dynamodb = boto3.resource('dynamodb')
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
 
         # ------------------------------------------------------------
         # テストデータ投入

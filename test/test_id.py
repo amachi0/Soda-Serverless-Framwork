@@ -8,11 +8,12 @@ from test.utility import init_db, lambda_gateway_event_base
 
 from app.functions.api_gateway.id.get_soda_id import get_soda_id
 
+
 class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_something(self):
-        dynamodb = boto3.resource('dynamodb')
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
 
         # ------------------------------------------------------------
         # テストデータ投入

@@ -11,11 +11,12 @@ from app.util.decimalencoder import DecimalEncoder
 from app.functions.api_gateway.favorite.push_favorite import push_favorite
 from app.functions.api_gateway.favorite.cancel_favorite import cancel_favorite
 
+
 class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_push_favorite(self):
-        dynamodb = boto3.resource('dynamodb')
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -75,7 +76,7 @@ class MyTestCase(unittest.TestCase):
     @mock.patch('app.functions.api_gateway.favorite.cancel_favorite.EventTable.removeFavorite')
     @mock.patch('app.functions.api_gateway.favorite.cancel_favorite.ProfileTable.deleteListItemInProfileTable')
     def test_cancel_favorite(self, mock1, mock2):
-        dynamodb = boto3.resource('dynamodb')
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
 
         # ------------------------------------------------------------
         # テストデータ投入

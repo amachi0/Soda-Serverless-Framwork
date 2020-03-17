@@ -13,7 +13,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_created_event(self):
-        dynamodb = boto3.resource('dynamodb')
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -94,10 +94,9 @@ class MyTestCase(unittest.TestCase):
         # ------------------------------------------------------------
         self.assertEqual(200, response['statusCode'], 'ステータスコード')
 
-
     @mock_dynamodb2
     def test_created_event_no_event(self):
-        dynamodb = boto3.resource('dynamodb')
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -134,12 +133,11 @@ class MyTestCase(unittest.TestCase):
         # ------------------------------------------------------------
         self.assertEqual(json.dumps({}), response['body'])
 
-
     @mock_dynamodb2
     def test_created_event_invalid(self):
         # pageの値が不正な時
 
-        dynamodb = boto3.resource('dynamodb')
+        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -219,6 +217,7 @@ class MyTestCase(unittest.TestCase):
         # TEST
         # ------------------------------------------------------------
         self.assertEqual(json.dumps({}), response['body'])
+
 
 if __name__ == '__main__':
     unittest.main()
