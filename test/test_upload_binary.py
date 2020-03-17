@@ -1,8 +1,11 @@
 import unittest
+import json
 
+import boto3
 from moto import mock_s3
 
-from test.utility import lambda_gateway_event_base, create_image_bucket
+from test.utility import init_db, lambda_gateway_event_base, create_image_bucket
+from app.util.decimalencoder import DecimalEncoder
 
 from app.functions.api_gateway.upload_binary.upload_binary import upload_binary
 

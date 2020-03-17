@@ -19,7 +19,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_create_event(self):
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -67,7 +67,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_change_event(self):
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -140,7 +140,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_detail_event(self):
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -199,7 +199,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_detail_event_favorite(self):
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -259,7 +259,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_detail_event_guest(self):
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -312,7 +312,7 @@ class MyTestCase(unittest.TestCase):
         topic_arn = create_sns_topic('cancel_event')
         os.environ['SNS_CANCEL_TOPIC'] = topic_arn
 
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
         # ------------------------------------------------------------
         # テストデータ投入
         # ------------------------------------------------------------
@@ -379,7 +379,7 @@ class MyTestCase(unittest.TestCase):
         topic_arn = create_sns_topic('cancel_event')
         os.environ['SNS_CANCEL_TOPIC'] = topic_arn
 
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
         # ------------------------------------------------------------
         # テストデータ投入
         # ------------------------------------------------------------
@@ -445,7 +445,7 @@ class MyTestCase(unittest.TestCase):
         topic_arn = create_sns_topic('cancel_event')
         os.environ['SNS_CANCEL_TOPIC'] = topic_arn
 
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
         # ------------------------------------------------------------
         # テストデータ投入
         # ------------------------------------------------------------

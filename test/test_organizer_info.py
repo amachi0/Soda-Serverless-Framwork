@@ -1,9 +1,12 @@
 import unittest
+from unittest import mock
+import json
 
 import boto3
 from moto import mock_dynamodb2
 
 from test.utility import init_db, lambda_gateway_event_base
+from app.util.decimalencoder import DecimalEncoder
 
 from app.functions.api_gateway.organizer_info.organizer_info import organizer_info
 
@@ -12,7 +15,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_organizer_info(self):
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
         # テストデータ投入

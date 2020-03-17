@@ -8,7 +8,6 @@ from app.functions.api_gateway.get_json.faqs import faqs
 from app.functions.api_gateway.get_json.terms import terms
 from app.functions.api_gateway.get_json.university import university
 
-
 class MyTestCase(unittest.TestCase):
 
     @mock_s3

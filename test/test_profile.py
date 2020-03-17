@@ -71,7 +71,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_change_profile(self):
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
         # テストデータ投入
@@ -90,17 +90,17 @@ class MyTestCase(unittest.TestCase):
 
         event = lambda_gateway_event_base()
         body = {
-            "identityId": "testIdentityId",
-            "urlData": "testUrlData",
-            "name": "testName",
-            "universities": [
-                "立命館大学"
-            ],
-            "isAcceptMail": True,
-            "profile": "よろしく",
-            "twitter": "testTwitter",
-            "facebook": "testFacebook",
-            "instagram": "testInstagram"
+          "identityId": "testIdentityId",
+          "urlData": "testUrlData",
+          "name": "testName",
+          "universities": [
+            "立命館大学"
+          ],
+          "isAcceptMail" : True,
+          "profile": "よろしく",
+          "twitter": "testTwitter",
+          "facebook": "testFacebook",
+          "instagram": "testInstagram"
         }
         event['body'] = json.dumps(body, cls=DecimalEncoder)
 
@@ -116,7 +116,7 @@ class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
     def test_get_profile(self):
-        dynamodb = boto3.resource('dynamodb', region_name='ap-northeast-1')
+        dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
         # テストデータ投入

@@ -4,14 +4,13 @@ import os
 import boto3
 from moto import mock_dynamodb2, mock_s3
 
-
 @mock_dynamodb2
 def init_db():
     """
     テスト用にDynamoDBのスキーマとデータを生成する。
     :return:
     """
-    client = boto3.resource('dynamodb', region_name='ap-northeast-1')
+    client = boto3.resource('dynamodb')
     client.create_table(**{
         'TableName': 'profile',
         'AttributeDefinitions': [
@@ -156,7 +155,7 @@ def init_db():
                     'ReadCapacityUnits': 1,
                     'WriteCapacityUnits': 1
                 }
-            }, {
+            },{
                 'IndexName': 'status-countOfLike-index',
                 'KeySchema': [
                     {
@@ -207,11 +206,10 @@ def init_db():
     }
     sequenceTable.put_item(Item=item)
 
-
 @mock_s3
 def create_json_bucket():
-    s3 = boto3.client('s3', region_name='ap-northeast-1')
-    s3r = boto3.resource('s3', region_name='ap-northeast-1')
+    s3 = boto3.client('s3')
+    s3r = boto3.resource('s3')
     s3.create_bucket(Bucket=os.environ['S3_JSON_BUCKET'])
 
     bucket = s3r.Bucket(os.environ['S3_JSON_BUCKET'])
@@ -223,21 +221,18 @@ def create_json_bucket():
         obj = bucket.Object(path)
         obj.put(Body=json.dumps(body), ContentType='application/json')
 
-
 @mock_s3
 def create_image_bucket():
-    s3 = boto3.client('s3', region_name='ap-northeast-1')
-    s3r = boto3.resource('s3', region_name='ap-northeast-1')
+    s3 = boto3.client('s3')
+    s3r = boto3.resource('s3')
     s3.create_bucket(Bucket=os.environ['S3_IMAGE_BUCKET'])
 
-
 def create_sns_topic(topic_name):
-    sns = boto3.client("sns", region_name='ap-northeast-1')
+    sns = boto3.client("sns")
     res = sns.create_topic(Name=topic_name)
     topic_arn = res.get('TopicArn')
 
     return topic_arn
-
 
 def lambda_gateway_event_base():
     """
@@ -251,7 +246,6 @@ def lambda_gateway_event_base():
     }
 
     return event
-
 
 def mock_failed(*args, **kwargs):
     return {
