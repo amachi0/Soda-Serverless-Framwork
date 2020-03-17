@@ -6,11 +6,10 @@ from app.data.source.profile_table import ProfileTable
 from app.data.sns import Sns
 from app.util.return_dict import Successed, Failured
 
-TOPIC_NAME = os.environ['SNS_CANCEL_TOPIC']
-
-
 def delete_event(event, context):
     try:
+        TOPIC_NAME = os.environ['SNS_CANCEL_TOPIC']
+
         param = json.loads(event["body"])
         eventId = param['eventId']
         identityId = param['identityId']
@@ -30,7 +29,7 @@ def delete_event(event, context):
         profileTable.deleteListItemInProfileTable(
             mEvent.identityId, "myEvent", listItem)
 
-        if not mEvent.hasfavorite:
+        if not mEvent.hasfavorite():
             res = {"result": 1}
             return Successed(res)
 

@@ -26,7 +26,7 @@ def created_event(event, context):
         startNum, size = createStartNumAndSize(page)
 
         # 配列長以上の要素を要求されたときはここで処理を終わる
-        if(len(sortedList) <= startNum):
+        if len(sortedList) <= startNum:
             return Successed({})
 
         # 配列の１ページ分を切り取る

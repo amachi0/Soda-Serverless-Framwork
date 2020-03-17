@@ -5,72 +5,40 @@ import boto3
 from moto import mock_dynamodb2
 
 from test.utility import init_db, lambda_gateway_event_base
-from app.util.decimalencoder import DecimalEncoder
 
-from app.functions.api_gateway.profile.create_user import create_user
-from app.functions.api_gateway.profile.change_profile import change_profile
-from app.functions.api_gateway.profile.get_profile import get_profile
+from app.functions.api_gateway.session.check_email import check_email
+from app.functions.api_gateway.session.check_soda_id import check_soda_id
 
 
 class MyTestCase(unittest.TestCase):
 
     @mock_dynamodb2
-    def test_create_user(self):
+    def test_check_email(self):
+
         # ------------------------------------------------------------
         # テストデータ投入
         # ------------------------------------------------------------
         init_db()
 
         event = lambda_gateway_event_base()
-        body = {
-            'identityId': 'testIdentityId',
-            'sodaId': 'testSodaId',
-            'email': 'test@test.com',
-            'urlData': 'testUrlData',
-            'name': 'testName',
-            'universities': ['立命館大学']
+        event['queryStringParameters'] = {
+            'email': 'test@test.com'
         }
-        event['body'] = json.dumps(body, cls=DecimalEncoder)
 
         # ------------------------------------------------------------
         # execute
         # ------------------------------------------------------------
-        response = create_user(event, {})
+        response = check_email(event, {})
 
         # ------------------------------------------------------------
         # TEST
         # ------------------------------------------------------------
+        res_body = json.loads(response['body'])
+        self.assertTrue(res_body['result'])
         self.assertEqual(200, response['statusCode'], 'ステータスコード')
 
     @mock_dynamodb2
-    def test_create_user_no_name(self):
-        # ------------------------------------------------------------
-        # テストデータ投入
-        # ------------------------------------------------------------
-        init_db()
-
-        event = lambda_gateway_event_base()
-        body = {
-            'identityId': 'testIdentityId',
-            'sodaId': 'testSodaId',
-            'email': 'test@test.com',
-            'urlData': 'testUrlData',
-            'universities': ['立命館大学']
-        }
-        event['body'] = json.dumps(body, cls=DecimalEncoder)
-
-        # ------------------------------------------------------------
-        # execute
-        # ------------------------------------------------------------
-        response = create_user(event, {})
-
-        # ------------------------------------------------------------
-        # TEST
-        # ------------------------------------------------------------
-        self.assertEqual(200, response['statusCode'], 'ステータスコード')
-
-    @mock_dynamodb2
-    def test_change_profile(self):
+    def test_check_email_invalid(self):
         dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
@@ -89,33 +57,49 @@ class MyTestCase(unittest.TestCase):
         table.put_item(Item=item)
 
         event = lambda_gateway_event_base()
-        body = {
-          "identityId": "testIdentityId",
-          "urlData": "testUrlData",
-          "name": "testName",
-          "universities": [
-            "立命館大学"
-          ],
-          "isAcceptMail" : True,
-          "profile": "よろしく",
-          "twitter": "testTwitter",
-          "facebook": "testFacebook",
-          "instagram": "testInstagram"
+        event['queryStringParameters'] = {
+            'email': 'test@test.com'
         }
-        event['body'] = json.dumps(body, cls=DecimalEncoder)
 
         # ------------------------------------------------------------
         # execute
         # ------------------------------------------------------------
-        response = change_profile(event, {})
+        response = check_email(event, {})
 
         # ------------------------------------------------------------
         # TEST
         # ------------------------------------------------------------
+        res_body = json.loads(response['body'])
+        self.assertFalse(res_body['result'])
         self.assertEqual(200, response['statusCode'], 'ステータスコード')
 
     @mock_dynamodb2
-    def test_get_profile(self):
+    def test_check_sodaId(self):
+
+        # ------------------------------------------------------------
+        # テストデータ投入
+        # ------------------------------------------------------------
+        init_db()
+
+        event = lambda_gateway_event_base()
+        event['queryStringParameters'] = {
+            'sodaId': 'testSodaId'
+        }
+
+        # ------------------------------------------------------------
+        # execute
+        # ------------------------------------------------------------
+        response = check_soda_id(event, {})
+
+        # ------------------------------------------------------------
+        # TEST
+        # ------------------------------------------------------------
+        res_body = json.loads(response['body'])
+        self.assertTrue(res_body['result'])
+        self.assertEqual(200, response['statusCode'], 'ステータスコード')
+
+    @mock_dynamodb2
+    def test_check_sodaId_invalid(self):
         dynamodb = boto3.resource('dynamodb')
 
         # ------------------------------------------------------------
@@ -141,11 +125,13 @@ class MyTestCase(unittest.TestCase):
         # ------------------------------------------------------------
         # execute
         # ------------------------------------------------------------
-        response = get_profile(event, {})
+        response = check_soda_id(event, {})
 
         # ------------------------------------------------------------
         # TEST
         # ------------------------------------------------------------
+        res_body = json.loads(response['body'])
+        self.assertFalse(res_body['result'])
         self.assertEqual(200, response['statusCode'], 'ステータスコード')
 
 

@@ -38,6 +38,11 @@ jobs:
           command:
             sls plugin install -n serverless-python-requirements
 
+      - run:
+          name: python package install
+          command:
+            pip install boto3 botocore moto --user
+
       # run tests
       - run:
           name: Run tests
