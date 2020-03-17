@@ -1,5 +1,8 @@
 import os
 
+# AWS Config
+os.environ['AWS_DEFAULT_REGION'] = 'ap-northeast-1'
+
 # profileテーブル
 os.environ['PROFILE_TABLE'] = 'profile'
 os.environ['PROFILE_CHECK_SODA_ID_INDEX'] = 'check-sodaId-index'
