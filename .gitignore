@@ -24,3 +24,5 @@ node_modules
 __pycache__
 /cover/
 /.coverage
+/config/custom.yml
+/config/environment.yml
